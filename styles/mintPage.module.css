@@ -1,0 +1,10 @@
+.button {
+    width: 60%;
+    height: 80%;
+    margin-top: 10%;
+    margin-bottom: 10%;
+    margin-left: 20%;
+    justify-items: center;
+    font-size: large;
+    font-weight: 400;
+}
