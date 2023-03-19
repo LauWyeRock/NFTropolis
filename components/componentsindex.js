@@ -18,6 +18,9 @@ import Brand from "./Brand/Brand";
 import Video from "./Video/Video";
 import Loader from "./Loader/Loader";
 import Error from "./Error/Error";
+import Model from "./Model/Model";
+import Friend from "./Friend/Friend";
+import UserCard from "./UserCard/UserCard";
 
 export {
   Button,
@@ -40,4 +43,7 @@ export {
   Video,
   Loader,
   Error,
+  Model,
+  Friend,
+  UserCard
 };
