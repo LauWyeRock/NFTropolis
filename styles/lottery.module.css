@@ -1,0 +1,61 @@
+.stats {
+    background-color: #091F1C;
+    color: white;
+    padding: 1rem;
+    flex: 1;
+    border-radius: 0.375rem;
+    border: 2px solid #004337;
+}
+
+.stats-container {
+    background-color: #091F1C;
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+}
+
+.countdown {
+    padding: 2rem;
+    font-size: 5rem;
+    text-align: center;
+    color: white;
+    border-radius: 0.625rem;
+    min-width: 150px;
+    background-color: #013F34;
+}
+
+.countdown-label {
+    text-align: center;
+    color: white;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    padding-top: 1rem;
+}
+
+.admin-button {
+    background-color: #091F1C;
+    padding: 0.5rem;
+    flex: 1;
+    border-radius: 0.375rem;
+    border: 2px solid #004337;
+}
+
+.admin-button:hover {
+    background-color: rgba(46, 204, 113, 0.2);
+}
+
+
+.uploadNFT{
+    width: 100%;
+    margin-block: 8rem;
+}
+
+.uploadNFT_box{
+    width: 60%;
+    margin:  0 auto;
+}
+
+@media screen and (max-width: 35em) {
+    .reSellToken_box{
+        width: 90%;
+    }
+}

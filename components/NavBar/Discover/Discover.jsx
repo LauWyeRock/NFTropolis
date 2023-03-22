@@ -37,6 +37,10 @@ const Discover = () => {
       name: "Blog",
       link: "blog",
     },
+    {
+      name: "Lottery",
+      link: "lottery",
+    },
   ];
   return (
     <div>

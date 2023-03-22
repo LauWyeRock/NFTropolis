@@ -26,13 +26,13 @@ async function main() {
   // await transferFunds.deployed();
 
   // Lottery
-  // const TransferFunds = await hre.ethers.getContractFactory("TransferFunds");
-  // const transferFunds = await TransferFunds.deploy();
-  // await transferFunds.deployed();
+  const Lottery = await hre.ethers.getContractFactory("LotteryGame");
+  const lottery = await Lottery.deploy();
+  await lottery.deployed();
 
-  console.log(` Marketplace deployed contract Address ${nftMarketplace.address}`);
-  console.log(` Chat deployed contract Address: ${chatApp.address}`);
-  // console.log(` deployed contract Address ${nftMarketplace.address}`);
+  console.log(` deployed contract Address ${nftMarketplace.address}`);
+  console.log(` Contract Address: ${chatApp.address}`);
+  console.log(` deployed contract Address ${lottery.address}`);
   // console.log(` deployed contract Address ${nftMarketplace.address}`);
   // console.log(` deployed contract Address ${nftMarketplace.address}`);
   // console.log(` deployed contract Address ${nftMarketplace.address}`);

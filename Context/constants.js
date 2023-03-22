@@ -3,12 +3,13 @@
 
 import nftMarketplace from "./NFTMarketplace.json";
 import chatApp from "./ChatApp.json";
+import lottery from "./LotteryGame.json";
 //import transferFunds from "./TransferFunds.json";
 //import biddingContract from "./BiddingContract.json"
 //import lottery from "./LotteryGame.json"
 
 //NFT MARKETPLACE
-export const NFTMarketplaceAddress = "0x3060EEe8144787ef95996A539E9897A9C9027F65";
+export const NFTMarketplaceAddress = "0xa0999F7BDfcB0413186a4009758c2A45188761f1";
 export const NFTMarketplaceABI = nftMarketplace.abi;
 
 //TRANSFER FUNDS
@@ -24,10 +25,10 @@ export const NFTMarketplaceABI = nftMarketplace.abi;
 // export const VotingABI =;
 
 // LOTTERYGAME
-// export const LotteryAddress =
-// export const LotteryABI =;
+export const LotteryAddress = "0xA641B1417bBA459EA1887bEFFBc28e36968FFFe8";
+export const LotteryABI = lottery.abi;
 
 // CHATAPP
-export const ChatAppAddress = "0x080Bf7e1b76d51aC62D86251D3998eADc65Ea244";
+export const ChatAppAddress = "0xB34B4073C8a2D6765b7fDB18D65a2299455995E4";
 export const ChatAppABI = chatApp.abi;
 
