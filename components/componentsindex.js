@@ -2,9 +2,7 @@ import Button from "./Button/Button";
 import Footer from "./Footer/Footer";
 import NavBar from "./NavBar/NavBar";
 import HeroSection from "./HeroSection/HeroSection";
-import Service from "./Service/Service";
 import BigNFTSilder from "./BigNFTSilder/BigNFTSilder";
-import Subscribe from "./Subscribe/Subscribe";
 import Title from "./Title/Title";
 import Category from "./Category/Category";
 import Filter from "./Filter/Filter";
@@ -14,22 +12,23 @@ import AudioLive from "./AudioLive/AudioLive";
 import LikeProfile from "./LikeProfile/LikeProfile";
 import FollowerTab from "./FollowerTab/FollowerTab";
 import Slider from "./Slider/Slider";
-import Brand from "./Brand/Brand";
-import Video from "./Video/Video";
+//import Brand from "./Brand/Brand";
 import Loader from "./Loader/Loader";
 import Error from "./Error/Error";
 import Model from "./Model/Model";
+
 import Friend from "./Friend/Friend";
 import UserCard from "./UserCard/UserCard";
+import NavBar2 from "./NavBar2/NavBar"
+import Filter2 from "./Filter2/Filter"
+import Model2 from "./Model2/Model"
 
 export {
   Button,
   Footer,
   NavBar,
   HeroSection,
-  Service,
   BigNFTSilder,
-  Subscribe,
   Title,
   Category,
   Filter,
@@ -39,11 +38,12 @@ export {
   LikeProfile,
   FollowerTab,
   Slider,
-  Brand,
-  Video,
   Loader,
   Error,
   Model,
   Friend,
-  UserCard
+  UserCard,
+  NavBar2,
+  Filter2,
+  Model2
 };

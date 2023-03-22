@@ -30,8 +30,8 @@ async function main() {
   // const transferFunds = await TransferFunds.deploy();
   // await transferFunds.deployed();
 
-  console.log(` deployed contract Address ${nftMarketplace.address}`);
-  console.log(` Contract Address: ${chatApp.address}`);
+  console.log(` Marketplace deployed contract Address ${nftMarketplace.address}`);
+  console.log(` Chat deployed contract Address: ${chatApp.address}`);
   // console.log(` deployed contract Address ${nftMarketplace.address}`);
   // console.log(` deployed contract Address ${nftMarketplace.address}`);
   // console.log(` deployed contract Address ${nftMarketplace.address}`);

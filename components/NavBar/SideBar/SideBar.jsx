@@ -63,19 +63,7 @@ const SideBar = ({ setOpenSideMenu, currentAccount, connectWallet }) => {
     },
   ];
   //------HELP CNTEER
-  const helpCenter = [
-    {
-      name: "About",
-      link: "aboutus",
-    },
-    {
-      name: "Contact Us",
-      link: "contactus",
-    },
-    {
-      name: "Sign Up",
-      link: "signUp",
-    },
+  const helpCenter = [  
     {
       name: "LogIn",
       link: "login",

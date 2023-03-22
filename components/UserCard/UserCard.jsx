@@ -3,7 +3,7 @@ import Image from "next/image";
 
 //INTERNAL IMPORT
 import Style from "./UserCard.module.css";
-import images from "../../img";
+import images from "../../img2";
 const UserCard = ({ el, i, addFriends }) => {
   console.log(el);
   return (

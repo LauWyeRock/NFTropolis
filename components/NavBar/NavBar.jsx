@@ -6,7 +6,7 @@ import { MdNotifications } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
 import { CgMenuLeft, CgMenuRight } from "react-icons/cg";
 import { DiJqueryLogo } from "react-icons/di";
-import { Discover, HelpCenter, Notification, Profile, SideBar } from "./index";
+import { Discover, HelpCenter, Profile, SideBar } from "./index";
 import { Button, Error } from "../componentsindex";
 import images from "../../img"; // HAVENT PUT IMAGES
 import { useRouter } from "next/router";
@@ -115,7 +115,7 @@ const NavBar = () => {
               className={Style.notify}
               onClick={() => openNotification()}
             />
-            {notification && <Notification />}
+            {/* {notification && <Notification />} */}
           </div>
 
           {/* CREATE BUTTON SECTION */}

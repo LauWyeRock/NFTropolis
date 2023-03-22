@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/router";
 
 //INTERNAL IMPORT
-import { Button, Category, Brand } from "../components/componentsindex";
+import { Button, Category } from "../components/componentsindex";
 import Style from "../styles/mintPage.module.css";
 //IMPORT SMART CONTRACT DATA
 import { NFTMarketplaceContext } from "../Context/NFTMarketplaceContext";

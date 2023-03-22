@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 //INTERNAL IMPORT
 import Style from "./Chat.module.css";
-import images from "../../../img";
+import images from "../../../img2";
 import { converTime } from "../../../Utils/apiFeature";
 import { Loader } from "../../componentsindex";
 

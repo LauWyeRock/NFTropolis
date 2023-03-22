@@ -3,7 +3,7 @@ import Image from "next/image";
 
 //INTERNAL IMPORT
 import Style from "./Friend.module.css";
-import images from "../../img";
+import images from "../../img2";
 import Card from "./Card/Card";
 import Chat from "./Chat/Chat";
 import { ChatAppContect } from "../../Context/ChatAppContext";
@@ -49,6 +49,7 @@ const Friend = () => {
             currentUserName={currentUserName}
             currentUserAddress={currentUserAddress}
             readUser={readUser}
+            
           />
         </div>
       </div>

@@ -4,14 +4,14 @@ import Link from "next/link";
 
 //INTERNAL IMPORT
 import Style from "./Card.module.css";
-import images from "../../../img";
+import images from "../../../img2";
 
 const Card = ({ readMessage, el, i, readUser }) => {
   console.log(el);
   return (
     <Link
       href={{
-        pathname: "/",
+        pathname: "/chatPage",
         query: { name: `${el.name}`, address: `${el.pubkey}` },
       }}
     >

@@ -4,9 +4,7 @@ import React, { useState, useEffect, useContext } from "react";
 import Style from "../styles/index.module.css";
 import {
   HeroSection,
-  Service,
   BigNFTSilder,
-  Subscribe,
   Title,
   Category,
   Filter,
@@ -15,8 +13,6 @@ import {
   AudioLive,
   FollowerTab,
   Slider,
-  Brand,
-  Video,
   Loader,
 } from "../components/componentsindex";
 import { getTopCreators } from "../TopCreators/TopCreators";
@@ -54,7 +50,6 @@ const Home = () => {
   return (
     <div className={Style.homePage}>
       <HeroSection />
-      <Service />
       <BigNFTSilder />
       <Title
         heading="Audio Collection"
@@ -81,9 +76,8 @@ const Home = () => {
         paragraph="Explore the NFTs in the most featured categories."
       />
       <Category />
-      <Subscribe />
-      <Brand />
-      <Video />
+     
+  
     </div>
   );
 };
