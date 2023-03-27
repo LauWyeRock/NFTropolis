@@ -1,0 +1,30 @@
+How everything works:
+
+You should probably try it in remix first
+
+1. Compile RPGToken, then input initial supply before u deploy it.
+
+2. Compile nftQuest, input will be the address of RPGToken, then deploy it.
+
+3. In account 1, use RPGToken to issue max initial supply
+
+4. From account 1, transfer the tokens to nftQuest address
+
+5. From there you can test out mint, start fight and watch the levels increase
+
+For Chainlink integration, if you can get it integrated through VRFv2Consumer.sol
+
+Roughly how chainlink works:
+
+1. Don't keep running the requests because it costs quite a lot of link tokens that we can't get easily
+
+2. Use injected provider - metamask, make sure u have eth on sepolia eth test net on your metamask
+
+3. use subscription id 660 before u click deploy
+
+4. request random function will request 2 random numbers 
+
+5. once requests are completed, use getRequestStatus to get the array of 2 numbers
+
+If you got any questions you can feel free to ask me :)
+
