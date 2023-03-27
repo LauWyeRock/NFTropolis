@@ -6,7 +6,6 @@ import { TiTick } from "react-icons/ti";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-//INTERNAL IMPORT
 import Style from "./Upload.module.css";
 import formStyle from "../AccountPage/Form/Form.module.css";
 import images from "../img";
@@ -122,7 +121,7 @@ const UloadNFT = ({ uploadToIPFS, createNFT }) => {
         <div className={formStyle.Form_box_input}>
           <label htmlFor="name">Choose collection</label>
           <p className={Style.upload_box_input_para}>
-            Choose an exiting collection or create a new one
+            Choose an existing collection or create a new one
           </p>
 
           <div className={Style.upload_box_slider_div}>
@@ -182,7 +181,7 @@ const UloadNFT = ({ uploadToIPFS, createNFT }) => {
             </div>
           </div>
           <div className={formStyle.Form_box_input}>
-            <label htmlFor="Propertie">Propertie</label>
+            <label htmlFor="Propertie">Properties</label>
             <div className={formStyle.Form_box_input_box}>
               <div className={formStyle.Form_box_input_box_icon}>
                 <AiTwotonePropertySafety />

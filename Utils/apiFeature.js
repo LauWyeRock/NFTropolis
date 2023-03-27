@@ -3,9 +3,9 @@ import Web3Modal from "web3modal";
 
 import { ChatAppAddress, ChatAppABI } from "../Context/constants";
 
-export const ChechIfWalletConnected = async () => {
+export const CheckIfWalletConnected = async () => {
   try {
-    if (!window.ethereum) return console.log("Install MateMask");
+    if (!window.ethereum) return console.log("Install MetaMask");
 
     const accounts = await window.ethereum.request({
       method: "eth_accounts",
@@ -20,12 +20,6 @@ export const ChechIfWalletConnected = async () => {
 
 export const connectWallet = async () => {
   try {
-    // if (!window.ethereum) return console.log("Install MateMask");
-
-    // const accounts = await window.ethereum.request({
-    //   method: "eth_requestAccounts",
-    // });
-
     if (!window.ethereum) return console.log("Install MetaMask");
 
     const accounts = await window.ethereum.request({
@@ -54,7 +48,7 @@ export const connectingWithContract = async () => {
   }
 };
 
-export const converTime = (time) => {
+export const convertTime = (time) => {
   const newTime = new Date(time.toNumber());
 
   const realTime =

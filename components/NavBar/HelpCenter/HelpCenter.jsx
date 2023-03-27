@@ -7,12 +7,16 @@ import Style from "./HelpCenter.module.css";
 const HelpCenter = () => {
   const helpCenter = [
     {
-      name: "LogIn",
-      link: "login",
+      name: "Chat",
+      link: "chatPage",
     },
     {
-      name: "Subscription",
-      link: "subscription",
+      name: "Transfer",
+      link: "transferFunds"
+    },
+    {
+      name: "Sell",
+      link: "reSellToken"
     },
   ];
   return (

@@ -4,11 +4,11 @@ import Image from "next/image";
 //INTERNAL IMPORT
 import Style from "./Filter.module.css";
 import images from "../../img2";
-import { ChatAppContect } from "../../Context/ChatAppContext";
+import { ChatAppContext } from "../../Context/ChatAppContext";
 import { Model2 } from "../componentsindex";
 
 const Filter2 = () => {
-  const { account, addFriends } = useContext(ChatAppContect);
+  const { account, addFriends } = useContext(ChatAppContext);
 
   //USESTATE
   const [addFriend, setAddFriend] = useState(false);

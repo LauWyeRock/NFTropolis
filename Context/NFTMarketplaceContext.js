@@ -29,6 +29,8 @@ import {
   NFTMarketplaceABI,
   transferFundsAddress,
   transferFundsABI,
+  BiddingAddress,
+  BiddingABI
 } from "./constants";
 
 //---FETCHING SMART CONTRACT
@@ -315,7 +317,7 @@ export const NFTMarketplaceProvider = ({ children }) => {
 
   const connectToTransferFunds = async () => {
     try {
-      const web3Modal = new Wenb3Modal();
+      const web3Modal = new Web3Modal();
       const connection = await web3Modal.connect();
       const provider = new ethers.providers.Web3Provider(connection);
       const signer = provider.getSigner();
@@ -398,6 +400,32 @@ export const NFTMarketplaceProvider = ({ children }) => {
       console.log(error);
     }
   };
+
+
+  
+  const fetchBiddingContract = (signerOrProvider) => 
+      new ethers.Contract(
+        BiddingAddress,
+        BiddingABI,
+        signerOrProvider
+      );
+  
+  const connectToBidding = async() => {
+    try {
+      const web3Modal = new Web3Modal();
+      const connection = await web3Modal.connect();
+      const provider = new ethers.providers.Web3Provider(connection);
+      const signer = provider.getSigner();
+      const contract = fetchBiddingContract(signer);
+      return contract;
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+
+
   return (
     <NFTMarketplaceContext.Provider
       value={{

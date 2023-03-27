@@ -2,10 +2,10 @@ import React, { useState, useEffect, useContext } from "react";
 //INTRNAL IMPORT
 import { UserCard } from "../Components/componentsindex";
 import Style from "../styles/alluser.module.css";
-import { ChatAppContect } from "../Context/ChatAppContext";
+import { ChatAppContext } from "../Context/ChatAppContext";
 
 const alluser = () => {
-  const { userLists, addFriends } = useContext(ChatAppContect);
+  const { userLists, addFriends } = useContext(ChatAppContext);
   return (
     <div>
       <div className={Style.alluser_info}>
