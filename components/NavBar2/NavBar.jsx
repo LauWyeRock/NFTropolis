@@ -4,7 +4,7 @@ import Link from "next/link";
 
 //INTERNAL IMPORT
 import Style from "./NavBar.module.css";
-import { ChatAppContect } from "../../Context/ChatAppContext";
+import { ChatAppContext } from "../../Context/ChatAppContext";
 import { Model2, Error } from "../componentsindex";
 import images from "../../img2";
 
@@ -26,7 +26,7 @@ const NavBar2 = () => {
   const [openModel, setOpenModel] = useState(false);
 
   const { account, userName, connectWallet, createAccount, error } =
-    useContext(ChatAppContect);
+    useContext(ChatAppContext);
   return (
     <div className={Style.NavBar}>
       <div className={Style.NavBar_box}>

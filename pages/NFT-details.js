@@ -32,5 +32,5 @@ const NFTDetails = () => {
     </div>
   );
 };
-
+  
 export default NFTDetails;

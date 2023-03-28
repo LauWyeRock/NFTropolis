@@ -16,12 +16,4 @@ module.exports = {
       accounts: [`0x${NEXT_PUBLIC_PRIVATE_KEY}`],
     },
   },
-
-    // fuji: {
-    //   url: `Your URL`,
-    //   accounts: [
-    //     `0x${"Your Account"}`,
-    //   ],
-    // },
-    // },
 };

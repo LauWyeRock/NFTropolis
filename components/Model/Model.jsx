@@ -4,7 +4,7 @@ import Image from "next/image";
 //INTERNAL IMPORT
 import Style from "./Model.module.css";
 import images from "../../img";
-import { ChatAppContect } from "../../Context/ChatAppContext";
+import { ChatAppContext } from "../../Context/ChatAppContext";
 import { Loader } from "../../Components/componentsindex";
 
 const Model = ({
@@ -21,7 +21,7 @@ const Model = ({
   const [name, setName] = useState("");
   const [accountAddress, setAccountAddress] = useState("");
 
-  const { loading } = useContext(ChatAppContect);
+  const { loading } = useContext(ChatAppContext);
   return (
     <div className={Style.Model}>
       <div className={Style.Model_box}>
@@ -73,7 +73,7 @@ const Model = ({
                   {""}
                   <Image src={images.close} alt="send" width={30} height={30} />
                   {""}
-                  Cancle
+                  Cancel
                 </button>
               </div>
             </div>

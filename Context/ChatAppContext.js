@@ -3,12 +3,12 @@ import { useRouter } from "next/router";
 
 //INTERNAL IMPORT
 import {
-  ChechIfWalletConnected,
+  CheckIfWalletConnected,
   connectWallet,
   connectingWithContract,
 } from "../Utils/apiFeature";
 
-export const ChatAppContect = React.createContext();
+export const ChatAppContext = React.createContext();
 
 export const ChatAppProvider = ({ children }) => {
   //USESTATE
@@ -121,7 +121,7 @@ export const ChatAppProvider = ({ children }) => {
     setCurrentUserAddress(userAddress);
   };
   return (
-    <ChatAppContect.Provider
+    <ChatAppContext.Provider
       value={{
         readMessage,
         createAccount,
@@ -129,7 +129,7 @@ export const ChatAppProvider = ({ children }) => {
         sendMessage,
         readUser,
         connectWallet,
-        ChechIfWalletConnected,
+        CheckIfWalletConnected,
         account,
         userName,
         friendLists,
@@ -142,6 +142,6 @@ export const ChatAppProvider = ({ children }) => {
       }}
     >
       {children}
-    </ChatAppContect.Provider>
+    </ChatAppContext.Provider>
   );
 };

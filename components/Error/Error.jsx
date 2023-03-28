@@ -19,7 +19,6 @@ const Error = () => {
             src={images.errorgif}
             width={200}
             height={200}
-            objectFit="cover"
             className={Style.Error_box_info_img}
           />
           <p>{error}</p>

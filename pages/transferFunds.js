@@ -115,11 +115,6 @@ const transferFunds = () => {
 
         {/* //TRANSACTION HISTORY */}
         <h1 className={Style.transfer_box_h1}>Transaction History</h1>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus cum
-          repellendus voluptates eveniet praesentium placeat unde sunt ducimus
-          consequatur ipsam.
-        </p>
 
         <div className={Style.transfer_box_history}>
           {transactions.map((el, i) => (

@@ -6,14 +6,14 @@ async function main() {
   await nftMarketplace.deployed();
 
   // Transfer Funds
-  // const TransferFunds = await hre.ethers.getContractFactory("TransferFunds");
-  // const transferFunds = await TransferFunds.deploy();
-  // await transferFunds.deployed();
+  const TransferFunds = await hre.ethers.getContractFactory("TransferFunds");
+  const transferFunds = await TransferFunds.deploy();
+  await transferFunds.deployed();
 
   // Bidding
-  // const TransferFunds = await hre.ethers.getContractFactory("TransferFunds");
-  // const transferFunds = await TransferFunds.deploy();
-  // await transferFunds.deployed();
+  const Bidding = await hre.ethers.getContractFactory("NftAuction");
+  const bidding = await Bidding.deploy();
+  await bidding.deployed();
 
   // Chat
   const ChatApp = await hre.ethers.getContractFactory("ChatApp");
@@ -30,11 +30,11 @@ async function main() {
   const lottery = await Lottery.deploy();
   await lottery.deployed();
 
-  console.log(` deployed contract Address ${nftMarketplace.address}`);
-  console.log(` Contract Address: ${chatApp.address}`);
-  console.log(` deployed contract Address ${lottery.address}`);
-  // console.log(` deployed contract Address ${nftMarketplace.address}`);
-  // console.log(` deployed contract Address ${nftMarketplace.address}`);
+  console.log(` Marketplace contract Address ${nftMarketplace.address}`);
+  console.log(` Chatapp contract Address: ${chatApp.address}`);
+  console.log(` lottery contract Address ${lottery.address}`);
+  console.log(` transferfunds contract Address ${transferFunds.address}`);
+  console.log(` bidding contract Address ${bidding.address}`);
   // console.log(` deployed contract Address ${nftMarketplace.address}`);
   // console.log(` deployed contract Address ${nftMarketplace.address}`);
 }

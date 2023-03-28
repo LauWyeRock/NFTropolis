@@ -46,31 +46,23 @@ const SideBar = ({ setOpenSideMenu, currentAccount, connectWallet }) => {
       link: "NFT-details",
     },
     {
-      name: "Account Setting",
-      link: "account",
-    },
-    {
       name: "Upload NFT",
       link: "uploadNFT",
-    },
-    {
-      name: "Connect Wallet",
-      link: "connectWallet",
-    },
-    {
-      name: "Blog",
-      link: "blog",
     },
   ];
   //------HELP CNTEER
   const helpCenter = [  
     {
-      name: "LogIn",
-      link: "login",
+      name: "Chat",
+      link: "chatPage",
     },
     {
-      name: "Subscription",
-      link: "subscription",
+      name: "Transfer",
+      link: "transferFunds",
+    },
+    {
+      name: "Sell",
+      link: "reSellToken",
     },
   ];
 

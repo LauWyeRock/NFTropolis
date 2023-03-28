@@ -9,13 +9,10 @@ import {
   Category,
   Filter,
   NFTCard,
-  Collection,
-  AudioLive,
   FollowerTab,
   Slider,
   Loader,
 } from "../components/componentsindex";
-import { getTopCreators } from "../TopCreators/TopCreators";
 
 //IMPORTING CONTRCT DATA
 import { NFTMarketplaceContext } from "../Context/NFTMarketplaceContext";
@@ -36,34 +33,19 @@ const Home = () => {
     // if (currentAccount) {
     fetchNFTs().then((items) => {
       console.log(nfts);
-      //setNfts(items.reverse()); ###################################################################
+      setNfts(items.reverse());
       setNftsCopy(items);
     });
     // }
   }, []);
 
-  //CREATOR LIST
-
-  const creators = getTopCreators(nfts);
-  // console.log(creators);
 
   return (
     <div className={Style.homePage}>
       <HeroSection />
       <BigNFTSilder />
-      <Title
-        heading="Audio Collection"
-        paragraph="Discover the most outstanding NFTs in all topics of life."
-      />
-      <AudioLive />
-      {creators.length == 0 ? (
-        <Loader />
-      ) : (
-        <FollowerTab TopCreator={creators} />
-      )}
-
+      
       <Slider />
-      <Collection />
       <Title
         heading="Featured NFTs"
         paragraph="Discover the most outstanding NFTs in all topics of life."
