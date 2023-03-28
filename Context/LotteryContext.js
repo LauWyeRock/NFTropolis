@@ -58,6 +58,7 @@ const connectingWithContract = async () => {
     const [maxTickets, setMaxTickets] = useState("");
     const [ticketCommission, setTicketCommission] = useState([]);
     const [duration, setDuration] = useState([]);
+    const [expiration, setExpiration] = useState([]);
 
     const [totalTickets, setTotalTickets] = useState([]);
     const [currenWinningReward, setCurrenWinningReward] = useState([]);
@@ -80,6 +81,7 @@ const connectingWithContract = async () => {
       setTotalTickets(totalTickets);
       //GET currenWinningReward
       const currenWinningReward = await contract.CurrentWinningReward();
+      ethers.utils.formatEther(currenWinningReward.toString())
       setCurrenWinningReward(currenWinningReward);
       //GET remainingTickets
       const remainingTickets = await contract.RemainingTickets();
@@ -87,6 +89,11 @@ const connectingWithContract = async () => {
       //GET winningsAmount
       const winningsAmount = await contract.checkWinningsAmount();
       setWinningsAmount(winningsAmount);
+
+      
+
+      const expiration = Date.now()
+      setExpiration(expiration);
       //Set constants
       setTicketPrice(0.01)
       setMaxTickets(100)
@@ -103,20 +110,28 @@ const connectingWithContract = async () => {
   }, []);
   
   //Buy X Number of Tickets
-  const buyTicket = async ({ numberOfTickets }) => {
+  const buyTicket = async (numberOfTickets ) => {
     try {
       const contract = await connectingWithContract();
-      const totalCost = numberOfTickets * contract.ticketPrice;
-      const price = ethers.utils.parseUnits(totalCost.toString(), "ether");
-    
-      const transaction = await contract.BuyTickets({
-        value: price,
+      const totalCost = numberOfTickets * parseFloat(ticketPrice);
+      
+       console.info(ethers.utils.parseEther(
+        totalCost.toString()).toString())
+      const transaction = await contract.BuyTickets( {
+        value: ethers.utils.parseEther(
+          totalCost.toString(),
+        )
       });
       setLoading(true);
       await transaction.wait();
-      
       setLoading(false);
-      window.location.reload();
+
+      const remainingTickets = await contract.RemainingTickets();
+      setRemainingTickets(remainingTickets);
+      // window.location.reload();
+
+      console.log("price is" + price)
+      console.log("remainingticks" + remainingTickets)
     } catch (error) {
       setError("Error while buying ticket");
       console.log(error);
@@ -128,17 +143,31 @@ const connectingWithContract = async () => {
     const drawWinnerTicket = async () => {
         try {
             const contract = await connectingWithContract();
-            const drawWinner = await contract.addFriend(accountAddress, name);
+            const drawWinner = await contract.DrawWinnerTicket();
             setLoading(true);
             await drawWinner.wait();
             setLoading(false);
-            router.push("/");
+            // router.push("/");
             window.location.reload();
         } catch(error) {
             setError("Something went wrong drawing Winner");
         }
 
     };
+
+    const withdrawWinnings = async () => {
+      try {
+        const contract = await connectingWithContract();
+        const withdrawWinnings = await contract.DrawWinnerTicket();
+        setLoading(true);
+        await withdrawWinnings.wait();
+        setLoading(false);
+        // router.push("/");
+        window.location.reload();
+      } catch(error) {
+        setError("Something went wrong withdrawing Winnings");
+      }
+    }
 
     return(
         <LotteryContext.Provider
@@ -156,6 +185,8 @@ const connectingWithContract = async () => {
         currenWinningReward,
         remainingTickets,
         winningsAmount,
+        expiration,
+        withdrawWinnings
       }}
     >
       {children}

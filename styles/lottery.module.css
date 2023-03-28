@@ -1,14 +1,14 @@
 .stats {
-    background-color: #091F1C;
+    background-color: #229C9D;
     color: white;
     padding: 1rem;
     flex: 1;
     border-radius: 0.375rem;
-    border: 2px solid #004337;
+    border: 2px solid #6de7d0;
 }
 
-.stats-container {
-    background-color: #091F1C;
+.stats_container {
+    background-color: #35191900;
     padding: 1.25rem;
     border-radius: 0.5rem;
 }
@@ -20,7 +20,7 @@
     color: white;
     border-radius: 0.625rem;
     min-width: 150px;
-    background-color: #013F34;
+    background-color: #229C9D;
 }
 
 .countdown-label {
@@ -47,15 +47,139 @@
 .uploadNFT{
     width: 100%;
     margin-block: 8rem;
-}
-
-.uploadNFT_box{
     width: 60%;
     margin:  0 auto;
 }
+
+
 
 @media screen and (max-width: 35em) {
     .reSellToken_box{
         width: 90%;
     }
+}
+
+.box {
+    display: flex; 
+padding-bottom: 0.5rem; 
+color: #ffffff; 
+justify-content: space-between; 
+align-items: center; 
+}
+
+.ticket-quantity {
+    flex: 1;
+    background-color: transparent;
+    text-align: right;
+    outline: none;
+    color: #fff;
+  }
+
+
+.sideboxTop{
+    display: flex; 
+    padding: 1rem; 
+    margin-left: 0.5rem; 
+    color: #ffffff; 
+    align-items: center; 
+    border-width: 1px; 
+    background: #091B18;
+}
+.totalCostTickets{
+    display: flex; 
+    font-size: 0.875rem;
+    line-height: 1.25rem; 
+    font-style: italic; 
+    font-weight: 800; 
+    justify-content: space-between; 
+    align-items: center; 
+
+}
+
+.ticketsFont{
+    display: flex; 
+    background-color: transparent; 
+    text-align: right; 
+    width: 100%; 
+    outline: 0; 
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #fff;
+        padding-bottom: 2px;
+      }
+    
+      .ticket-container {
+        display: flex;
+        align-items: center;
+        color: #fff;
+        background-color: #091B18;
+        border: 1px solid #229C9D;
+        padding: 4px;
+      }
+
+      .ticket_info_container {
+        margin-top: 20px;
+      }
+    
+      .ticket_info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: bold;
+        font-style: italic;
+      }
+
+      .ticket_quantity{
+        display: flex; 
+        background-color: transparent; 
+        text-align: right; 
+        width: 100%; 
+        outline: 0; 
+        
+      }
+    .body{
+        margin: 1.25rem; 
+    margin-top: 1.25rem; 
+    justify-content: center; 
+    align-items: flex-start; 
+
+
+    @media (min-width: 768px) { 
+    display: flex; 
+    margin-left: 1.25rem; 
+    margin-top: 0; 
+    flex-direction: row; 
+ }
+    }
+
+    .wholepage{
+        display: flex; 
+        flex-direction: column; 
+        min-height: 100vh; 
+        background: #091B18;
+
+    }
+.flex_2{
+    flex: 1 1 0%; 
+}
+.button{
+    padding-top: 1.25rem;
+padding-bottom: 1.25rem; 
+padding-left: 2.5rem;
+padding-right: 2.5rem; 
+margin-top: 1.25rem; 
+background-image:  linear-gradient(to bottom right, var(--tw-gradient-stops)); 
+color: #ffffff; 
+font-weight: 600; 
+width: 100%; 
+border-radius: 0.375rem; 
+box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); 
+
 }

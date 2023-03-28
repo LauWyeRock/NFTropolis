@@ -68,7 +68,7 @@ contract LotteryGame {
         }
     }
 
-    function DrawWinnerTicket() public isOperator {
+    function DrawWinnerTicket() public {
         require(tickets.length > 0, "No tickets were purchased");
 
         bytes32 blockHash = blockhash(block.number - tickets.length);
@@ -86,7 +86,7 @@ contract LotteryGame {
         expiration = block.timestamp + duration;
     }
 
-    function restartDraw() public isOperator {
+    function restartDraw() public {
         require(tickets.length == 0, "Cannot Restart Draw as Draw is in play");
 
         delete tickets;
@@ -132,7 +132,7 @@ contract LotteryGame {
 
     function IsWinner() public view returns (bool) {
         return winnings[msg.sender] > 0;
-    }
+    } 
 
     function CurrentWinningReward() public view returns (uint256) {
         return tickets.length * ticketPrice;
