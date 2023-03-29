@@ -18,6 +18,12 @@ const reSellToken = () => {
   const router = useRouter();
   const { id, tokenURI } = router.query;
 
+  const { fetchMyNFTsOrListedNFTs, currentAccount } = useContext(
+    NFTMarketplaceContext
+  ); 
+
+
+
   const fetchNFT = async () => {
     if (!tokenURI) return;
 

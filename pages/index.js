@@ -7,10 +7,7 @@ import {
   BigNFTSilder,
   Title,
   Category,
-  Filter,
   NFTCard,
-  FollowerTab,
-  Slider,
   Loader,
 } from "../components/componentsindex";
 
@@ -44,13 +41,10 @@ const Home = () => {
     <div className={Style.homePage}>
       <HeroSection />
       <BigNFTSilder />
-      
-      <Slider />
       <Title
         heading="Featured NFTs"
         paragraph="Discover the most outstanding NFTs in all topics of life."
       />
-      <Filter />
       {nfts.length == 0 ? <Loader /> : <NFTCard NFTData={nfts} />}
 
       <Title

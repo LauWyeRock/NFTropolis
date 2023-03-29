@@ -2,11 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import Style from "./NavBar.module.css";
 import React, { useState, useEffect, useContext } from "react";
-import { MdNotifications } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
 import { CgMenuLeft, CgMenuRight } from "react-icons/cg";
 import { DiJqueryLogo } from "react-icons/di";
-import { Discover, HelpCenter, Profile, SideBar } from "./index";
+import { Discover, HelpCenter, Profile } from "./index";
 import { Button, Error } from "../componentsindex";
 import images from "../../img"; // HAVENT PUT IMAGES
 import { useRouter } from "next/router";
@@ -93,7 +92,7 @@ const NavBar = () => {
         <div className={Style.navbar_container_right}>
           <div className={Style.navbar_container_right_discover}>
             {/* DISCOVER MENU */}
-            <p onClick={(e) => openMenu(e)}>Discover</p>
+            <p onClick={(e) => openMenu(e)}>Play</p>
             {discover && (
               <div className={Style.navbar_container_right_discover_box}>
                 <Discover />
@@ -102,20 +101,12 @@ const NavBar = () => {
           </div>
 
           <div className={Style.navbar_container_right_help}>
-            <p onClick={(e) => openMenu(e)}>Help Center</p>
+            <p onClick={(e) => openMenu(e)}>Trade</p>
             {help && (
               <div className={Style.navbar_container_right_help_box}>
                 <HelpCenter />
               </div>
             )}
-          </div>
-
-          <div className={Style.navbar_container_right_notify}>
-            <MdNotifications
-              className={Style.notify}
-              onClick={() => openNotification()}
-            />
-            {/* {notification && <Notification />} */}
           </div>
 
           {/* CREATE BUTTON SECTION */}
@@ -159,7 +150,7 @@ const NavBar = () => {
       </div>
 
       {/* SIDBAR CPMPONE/NT */}
-      {openSideMenu && (
+      {/* {openSideMenu && (
         <div className={Style.sideBar}>
           <SideBar
             setOpenSideMenu={setOpenSideMenu}
@@ -167,7 +158,7 @@ const NavBar = () => {
             connectWallet={connectWallet}
           />
         </div>
-      )}
+      )} */}
 
       {openError && <Error />}
     </div>

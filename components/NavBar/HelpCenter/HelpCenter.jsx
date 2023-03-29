@@ -11,6 +11,10 @@ const HelpCenter = () => {
       link: "chatPage",
     },
     {
+      name: "Insurance",
+      link: "insurance"
+    },
+    {
       name: "Transfer",
       link: "transferFunds"
     },

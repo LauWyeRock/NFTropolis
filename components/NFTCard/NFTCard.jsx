@@ -82,7 +82,7 @@ const NFTCard = ({ NFTData }) => {
                         Style.NFTCard_box_update_details_price_box_stock
                       }
                     >
-                      <small>61 in stock</small>
+                      <small>20 in stock</small>
                     </div>
                   </div>
                 </div>

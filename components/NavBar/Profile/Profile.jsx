@@ -1,8 +1,6 @@
 import React from "react";
 import Image from "next/image";
 import { FaUserAlt, FaRegImage, FaUserEdit } from "react-icons/fa";
-import { MdHelpCenter } from "react-icons/md";
-import { TbDownloadOff, TbDownload } from "react-icons/tb";
 import Link from "next/link";
 
 //INTERNAL IMPORT
@@ -22,7 +20,7 @@ const Profile = ({ currentAccount }) => {
         />
 
         <div className={Style.profile_account_info}>
-          <p>Shoaib Bhai</p>
+          <p>Wye Rock</p>
           <small>{currentAccount.slice(0, 18)}..</small>
         </div>
       </div>
@@ -41,27 +39,11 @@ const Profile = ({ currentAccount }) => {
               <Link href={{ pathname: "/author" }}>My Items</Link>
             </p>
           </div>
-          <div className={Style.profile_menu_one_item}>
-            <FaUserEdit />
-            <p>
-              <Link href={{ pathname: "/account" }}>Edit Profile</Link>
-            </p>
-          </div>
+         
         </div>
 
         <div className={Style.profile_menu_two}>
-          <div className={Style.profile_menu_one_item}>
-            <MdHelpCenter />
-            <p>
-              <Link href={{ pathname: "/contactus" }}>Help</Link>
-            </p>
-          </div>
-          <div className={Style.profile_menu_one_item}>
-            <TbDownload />
-            <p>
-              <Link href={{ pathname: "/aboutus" }}>About Us</Link>
-            </p>
-          </div>
+          
         </div>
       </div>
     </div>

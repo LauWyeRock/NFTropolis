@@ -4,7 +4,7 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-
+import "../contracts/NFTInsurance.sol";
 import "hardhat/console.sol";
 
 contract Marketplace is ERC721URIStorage {
@@ -14,6 +14,12 @@ contract Marketplace is ERC721URIStorage {
 
     uint256 listingPrice = 0.025 ether;
     address payable owner;
+    
+    mapping(uint256 => MarketItem) public insuredTokens; //////////
+    mapping(uint256 => uint256) public insuredAmounts; ///////////
+
+    uint256 public totalInsuredAmount; //////////
+    uint256 public premium = 0.00001 ether; //////////////
 
     mapping(uint256 => MarketItem) private idToMarketItem;
 
@@ -76,6 +82,29 @@ contract Marketplace is ERC721URIStorage {
         _setTokenURI(newTokenId, tokenURI);
         createMarketItem(newTokenId, price);
         return newTokenId;
+    }
+
+    function insureToken(uint256 tokenId) external payable {
+        require(msg.sender == idToMarketItem[tokenId].owner, "Only the owner can insure tokens");
+        require(!insuredTokens[tokenId], "Token is already insured");
+        
+        uint256 tokenValue = idToMarketItem[tokenId].price;
+        require(msg.value >= premium, "Premium not paid");
+        insuredTokens[tokenId] = true;
+        insuredAmounts[tokenId] += tokenValue;
+        totalInsuredAmount += tokenValue;
+    }
+    
+    function claimInsurance(uint256 tokenId) external {
+        require(insuredTokens[tokenId], "Token is not insured");
+        require(msg.sender == idToMarketItem[tokenId].owner, "Only owner of token can claim");
+        
+        uint256 tokenValue = idToMarketItem[tokenId].price;
+        uint256 payout = tokenValue * (insuredAmounts[tokenId] / totalInsuredAmount);
+        insuredAmounts[tokenId] -= tokenValue;
+        totalInsuredAmount -= tokenValue;
+        insuredTokens[tokenId] = false;
+        payable(msg.sender).transfer(payout);
     }
 
     function createMarketItem(uint256 tokenId, uint256 price) private {
@@ -204,4 +233,6 @@ contract Marketplace is ERC721URIStorage {
         }
         return items;
     }
+
+
 }

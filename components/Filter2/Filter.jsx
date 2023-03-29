@@ -5,7 +5,7 @@ import Image from "next/image";
 import Style from "./Filter.module.css";
 import images from "../../img2";
 import { ChatAppContext } from "../../Context/ChatAppContext";
-import { Model2 } from "../componentsindex";
+import { Model } from "../componentsindex";
 
 const Filter2 = () => {
   const { account, addFriends } = useContext(ChatAppContext);
@@ -24,11 +24,11 @@ const Filter2 = () => {
         <div className={Style.Filter_box_right}>
           <button>
             <Image src={images.clear} alt="clear" width={20} height={20} />
-            CLEAR CHAT
+            Clear Chat
           </button>
           <button onClick={() => setAddFriend(true)}>
             <Image src={images.user} alt="clear" width={20} height={20} />
-            ADD FRIEND
+            Add Friend
           </button>
         </div>
       </div>
@@ -36,12 +36,12 @@ const Filter2 = () => {
       {/* //MODEL COMPONENT */}
       {addFriend && (
         <div className={Style.Filter_model}>
-          <Model2
+          <Model
             openBox={setAddFriend}
-            title="WELCOME TO"
-            head="CHAT BUDDY"
-            info="Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum sit doloribus quod vel expedita, dicta voluptatibus, nemo, deserunt minima quis recusandae porro officiis modi fugiat libero tempora corporis necessitatibus itaque!"
-            smallInfo="Kindley Select Your Friend Name & Address.."
+            title="Welcome to"
+            head="NFTropolis Chat Page"
+            info="Here, you can meet new friends to play games together, or negotiate on the price of NFTs"
+            smallInfo="Please input name and address of the other party"
             image={images.hero}
             functionName={addFriends}
           />

@@ -2,9 +2,8 @@ import React, { useEffect, useState, useContext } from "react";
 
 //INTRNAL IMPORT
 import Style from "../styles/searchPage.module.css";
-import { Slider,  Loader } from "../components/componentsindex";
+import { Loader } from "../components/componentsindex";
 import { SearchBar } from "../SearchPage/searchBarIndex";
-import { Filter } from "../components/componentsindex";
 
 import { NFTCardTwo, Banner } from "../collectionPage/collectionIndex";
 import images from "../img";
@@ -58,9 +57,8 @@ const searchPage = () => {
         onHandleSearch={onHandleSearch}
         onClearSearch={onClearSearch}
       />
-      <Filter />
       {nfts.length == 0 ? <Loader /> : <NFTCardTwo NFTData={nfts} />}
-      <Slider />
+      {/* <Slider /> */}
     </div>
   );
 };

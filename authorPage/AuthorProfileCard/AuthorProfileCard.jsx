@@ -31,23 +31,7 @@ const AuthorProfileCard = ({ currentAccount }) => {
     navigator.clipboard.writeText(copyText.value);
   };
 
-  const openShare = () => {
-    if (!share) {
-      setShare(true);
-      setReport(false);
-    } else {
-      setShare(false);
-    }
-  };
-
-  const openReport = () => {
-    if (!report) {
-      setReport(true);
-      setShare(false);
-    } else {
-      setReport(false);
-    }
-  };
+  
 
   return (
     <div className={Style.AuthorProfileCard}>
@@ -64,10 +48,7 @@ const AuthorProfileCard = ({ currentAccount }) => {
 
         <div className={Style.AuthorProfileCard_box_info}>
           <h2>
-            Dony Herrera{""}{" "}
-            <span>
-              <MdVerified />
-            </span>{" "}
+            Wye Rock{""}{" "}
           </h2>
 
           <div className={Style.AuthorProfileCard_box_info_address}>
@@ -79,8 +60,7 @@ const AuthorProfileCard = ({ currentAccount }) => {
           </div>
 
           <p>
-            Punk #4786 / An OG Cryptopunk Collector, hoarder of NFTs.
-            Contributing to @ether_cards, an NFT Monetization Platform.
+            Creator of the NFTMarketplace. 
           </p>
 
           <div className={Style.AuthorProfileCard_box_info_social}>
@@ -97,65 +77,9 @@ const AuthorProfileCard = ({ currentAccount }) => {
               <TiSocialYoutube />
             </a>
           </div>
-        </div>
-
-        <div className={Style.AuthorProfileCard_box_share}>
-          <Button btnName="Follow" handleClick={() => {}} />
-          <MdCloudUpload
-            onClick={() => openShare()}
-            className={Style.AuthorProfileCard_box_share_icon}
-          />
-
-          {share && (
-            <div className={Style.AuthorProfileCard_box_share_upload}>
-              <p>
-                <span>
-                  <TiSocialFacebook />
-                </span>{" "}
-                {""}
-                Facebook
-              </p>
-              <p>
-                <span>
-                  <TiSocialInstagram />
-                </span>{" "}
-                {""}
-                Instragram
-              </p>
-              <p>
-                <span>
-                  <TiSocialLinkedin />
-                </span>{" "}
-                {""}
-                LinkedIn
-              </p>
-              <p>
-                <span>
-                  <TiSocialYoutube />
-                </span>{" "}
-                {""}
-                YouTube
-              </p>
-            </div>
-          )}
-
-          <BsThreeDots
-            onClick={() => openReport()}
-            className={Style.AuthorProfileCard_box_share_icon}
-          />
-
-          {report && (
-            <p className={Style.AuthorProfileCard_box_share_report}>
-              <span>
-                <MdOutlineReportProblem />
-              </span>{" "}
-              {""}
-              Report abouse
-            </p>
-          )}
+        </div>        
         </div>
       </div>
-    </div>
   );
 };
 

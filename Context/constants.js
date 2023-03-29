@@ -1,7 +1,7 @@
 ///0x5FbDB2315678afecb367f032d93F642f64180aa3
 //0x5FbDB2315678afecb367f032d93F642f64180aa3
 
-import nftMarketplace from "./NFTMarketplace.json";
+import nftMarketplace from "./Marketplace.json";
 import chatApp from "./ChatApp.json";
 import lottery from "./LotteryGame.json";
 //import transferFunds from "./TransferFunds.json";
@@ -9,7 +9,7 @@ import lottery from "./LotteryGame.json";
 //import lottery from "./LotteryGame.json"
 
 //NFT MARKETPLACE
-export const NFTMarketplaceAddress = "0x7E44ea05Ed07986367Fc7E38d7113981d807315b";
+export const NFTMarketplaceAddress = "0x9651e5925D3C6443884f679Ecae5Cd4b2F093df0";
 export const NFTMarketplaceABI = nftMarketplace.abi;
 
 //TRANSFER FUNDS
@@ -25,10 +25,10 @@ export const NFTMarketplaceABI = nftMarketplace.abi;
 // export const VotingABI =;
 
 //LOTTERYGAME
-export const LotteryAddress = "0xf95bb18c8CBB46fFf1ABDA3Df0251AaD37E2fDd1";
+export const LotteryAddress = "0x3ddf55076c4c8082773A5D56f6437bDe89F352f9";
 export const LotteryABI = lottery.abi;
 
 // CHATAPP
-export const ChatAppAddress = "0x6E55c0a90Ac728aAdAa55aD5d1Bbda1A591f7d6D";
+export const ChatAppAddress = "0x57840C32Ae35B4f220a112b0612Ccc3FBF2b7947";
 export const ChatAppABI = chatApp.abi;
 

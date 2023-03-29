@@ -19,8 +19,7 @@ const HeroSection = () => {
         <div className={Style.heroSection_box_left}>
           <h1>{titleData} 🖼️</h1>
           <p>
-            Discover the most outstanding NTFs in all topics of life. Creative
-            your NTFs and sell them
+            Find amazing NFTs created by different designers and bid or buy them.
           </p>
           <Button
             btnName="Start your search"

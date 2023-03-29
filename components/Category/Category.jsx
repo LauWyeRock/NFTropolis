@@ -18,40 +18,18 @@ const Category = () => {
     },
     {
       images: images.creatorbackground3,
-      name: "Entirtment Art",
+      name: "Entertainment Art",
     },
     {
       images: images.creatorbackground4,
-      name: "Time Life",
+      name: "Life",
     },
     {
       images: images.creatorbackground5,
-      name: "Animals Art",
+      name: "Animals",
     },
-    {
-      images: images.creatorbackground6,
-      name: "Music",
-    },
-    {
-      images: images.creatorbackground7,
-      name: "Digital Arts",
-    },
-    {
-      images: images.creatorbackground8,
-      name: "Hubby",
-    },
-    {
-      images: images.creatorbackground8,
-      name: "Bad Arts",
-    },
-    {
-      images: images.creatorbackground9,
-      name: " Arts",
-    },
-    {
-      images: images.creatorbackground10,
-      name: "My Fav",
-    },
+   
+    
   ];
   return (
     <div className={Style.box_category}>
@@ -72,7 +50,7 @@ const Category = () => {
               </span>
               <div className={Style.category_box_title_info}>
                 <h4>{el.name}</h4>
-                <small>{i + 1}995 NFTS</small>
+                <small>{i + 1} NFTS</small>
               </div>
             </div>
           </div>

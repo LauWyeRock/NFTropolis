@@ -20,7 +20,7 @@ const Form = () => {
             <label htmlFor="name">Username</label>
             <input
               type="text"
-              placeholder="shoaib bhai"
+              placeholder="Wye Rock"
               className={Style.Form_box_input_userName}
             />
           </div>
@@ -77,7 +77,7 @@ const Form = () => {
               </div>
             </div>
             <div className={Style.Form_box_input}>
-              <label htmlFor="Instragram">Instragram</label>
+              <label htmlFor="Instragram">Instagram</label>
               <div className={Style.Form_box_input_box}>
                 <div className={Style.Form_box_input_box_icon}>
                   <TiSocialInstagram />

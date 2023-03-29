@@ -27,9 +27,7 @@ const Footer = () => {
             <DiJqueryLogo className={Style.footer_box_social_logo} />
           </a>
           <p>
-            The world’s first and largest digital marketplace for crypto
-            collectibles and non-fungible tokens (NFTs). Buy, sell, and discover
-            exclusive digital items.
+            Our very own NFT marketplace where you can chat and play games as well
           </p>
 
           <div className={Style.footer_social}>
@@ -52,12 +50,12 @@ const Footer = () => {
         </div>
 
         <div className={Style.footer_box_discover}>
-          <h3>Discover</h3>
+          <h3>Play</h3>
           <Discover />
         </div>
 
         <div className={Style.footer_box_help}>
-          <h3>Help Center</h3>
+          <h3>Trade</h3>
           <HelpCenter />
         </div>
 
@@ -67,8 +65,7 @@ const Footer = () => {
           </div>
           <div className={Style.subscribe_box_info}>
             <p>
-              Discover, collect, and sell extraordinary NFTs OpenSea is the
-              world first and largest NFT marketplace
+              Come join us in this multi-functional NFT marketplace now!
             </p>
           </div>
         

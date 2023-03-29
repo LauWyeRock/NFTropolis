@@ -20,7 +20,7 @@ contract NftAuction{
     uint256 public  discountRate;
     uint256 public  startAt;
     uint256 public  expiresAt;
- 
+
 
   constructor(
     uint256 _startingPrice,
