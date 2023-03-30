@@ -4,7 +4,6 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "../contracts/NFTInsurance.sol";
 import "hardhat/console.sol";
 
 contract Marketplace is ERC721URIStorage {
@@ -15,7 +14,7 @@ contract Marketplace is ERC721URIStorage {
     uint256 listingPrice = 0.025 ether;
     address payable owner;
     
-    mapping(uint256 => MarketItem) public insuredTokens; //////////
+    mapping(uint256 => bool) public insuredTokens; //////////
     mapping(uint256 => uint256) public insuredAmounts; ///////////
 
     uint256 public totalInsuredAmount; //////////
@@ -81,7 +80,12 @@ contract Marketplace is ERC721URIStorage {
         _mint(msg.sender, newTokenId);
         _setTokenURI(newTokenId, tokenURI);
         createMarketItem(newTokenId, price);
+        insuredTokens[newTokenId] = false;
         return newTokenId;
+    }
+
+    function getPremium() public view returns (uint256) {
+        return premium;
     }
 
     function insureToken(uint256 tokenId) external payable {
@@ -148,12 +152,13 @@ contract Marketplace is ERC721URIStorage {
         idToMarketItem[tokenId].owner = payable(address(this));
         _itemsSold.decrement();
 
+
         _transfer(msg.sender, address(this), tokenId);
     }
 
     /* Creates the sale of a marketplace item */
     /* Transfers ownership of the item, as well as funds between parties */
-    function createMarketSale(uint256 tokenId) public payable {
+    function createMarketSale(uint256 tokenId) public payable returns(uint256) {
         uint256 price = idToMarketItem[tokenId].price;
         require(
             msg.value == price,
@@ -163,9 +168,13 @@ contract Marketplace is ERC721URIStorage {
         idToMarketItem[tokenId].sold = true;
         idToMarketItem[tokenId].seller = payable(address(0));
         _itemsSold.increment();
+        uint256 itemSold = _itemsSold.current();
+
         _transfer(address(this), msg.sender, tokenId);
         payable(owner).transfer(listingPrice);
         payable(idToMarketItem[tokenId].seller).transfer(msg.value);
+
+        return itemSold;
     }
 
     /* Returns all unsold market items */
@@ -234,5 +243,9 @@ contract Marketplace is ERC721URIStorage {
         return items;
     }
 
+    /*Return the owner of tokenID*/
+    function getOwner(uint256 tokenId) public view returns(address){
+        return idToMarketItem[tokenId].owner;
+    }
 
 }

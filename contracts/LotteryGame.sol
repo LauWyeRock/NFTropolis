@@ -50,11 +50,8 @@ contract LotteryGame {
     function BuyTickets() public payable {
         require(
             msg.value % ticketPrice == 0,
-            string.concat(
-                "the value must be multiple of ",
-                Strings.toString(ticketPrice),
-                " Ether"
-            )
+            "the value must be multiple of 0.01 Ether"
+            
         );
         uint256 numOfTicketsToBuy = msg.value / ticketPrice;
 
@@ -67,7 +64,6 @@ contract LotteryGame {
             tickets.push(msg.sender);
         }
     }
-
     function DrawWinnerTicket() public {
         require(tickets.length > 0, "No tickets were purchased");
 
@@ -140,5 +136,13 @@ contract LotteryGame {
 
     function RemainingTickets() public view returns (uint256) {
         return maxTickets - tickets.length;
+    }
+
+    function setExpiration() public isOperator {
+        expiration = block.timestamp;
+    }
+
+    function getOperatorTotalCommission() public view returns (uint256){
+        return operatorTotalCommission;
     }
 }

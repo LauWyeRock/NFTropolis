@@ -64,7 +64,7 @@ contract ChatApp{
     }
 
     //checkAlreadyFriends
-    function checkAlreadyFriends(address pubkey1, address pubkey2) internal view returns (bool){
+    function checkAlreadyFriends(address pubkey1, address pubkey2) public view returns (bool){
 
         if(userList[pubkey1].friendList.length > userList[pubkey2].friendList.length){
             address tmp = pubkey1;
@@ -117,4 +117,10 @@ contract ChatApp{
     function getAllAppUser() public view returns(AllUserStruct[] memory){
         return getAllUsers;
     }
+
+    function readFirstMessage(address friend_key) external view returns(string memory){
+        bytes32 chatCode = _getChatCode(msg.sender, friend_key);
+        return allMessages[chatCode][0].msg;
+    }
+
 }
