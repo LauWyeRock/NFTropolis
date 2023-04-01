@@ -4,7 +4,7 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "hardhat/console.sol";
 
-contract Create {
+contract Voting {
     using Counters for Counters.Counter;
 
     Counters.Counter public _voterId;
@@ -163,7 +163,7 @@ contract Create {
 
         Voter storage voter = voters[_address];
 
-        require(voter.voter_allowed == 0);
+        require(voter.voter_allowed == 0, "Vote authorisation given before");
 
         voter.voter_allowed = 1;
         voter.voter_name = _name;
@@ -186,7 +186,7 @@ contract Create {
             voter.voter_vote,
             voter.voter_ipfs
         );
-        // }
+       
     }
 
     function vote(address _candidateAddress, uint256 _candidateVoteId)

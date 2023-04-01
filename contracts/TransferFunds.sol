@@ -2,7 +2,7 @@
 pragma solidity ^0.8.4;
 
 contract TransferFunds {
-    uint256 transactionCount;
+    uint256 public transactionCount = 0;
 
     event TransferEvent(
         address from,
@@ -58,4 +58,28 @@ contract TransferFunds {
     function getTransactionCount() public view returns (uint256) {
         return transactionCount;
     }
+
+
+    /*Getter Function For Testing */
+    function getSender(uint index) public view returns (address) {
+        return transactions[index].sender;
+    }
+
+    function getReceiver(uint index) public view returns (address) {
+        return transactions[index].receiver;
+    }
+
+    function getTranscationAmount(uint index) public view returns (uint256) {
+        return transactions[index].amount;
+    }
+
+    function getMessage(uint index) public view returns (string memory) {
+        return transactions[index].message;
+    }
+
+    function getTimeStamp(uint index) public view returns (uint256) {
+        return transactions[index].timestamp;
+    }
+
+
 }
