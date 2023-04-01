@@ -16,6 +16,9 @@ import UserCard from "./UserCard/UserCard";
 import NavBar2 from "./NavBar2/NavBar"
 import Filter2 from "./Filter2/Filter"
 
+import CandidatesTable from "./CandidatesTable";
+import VoteForm from "./VoteForm";
+
 export {
   Button,
   Footer,
@@ -33,4 +36,7 @@ export {
   UserCard,
   NavBar2,
   Filter2,
+
+  CandidatesTable,
+  VoteForm
 };

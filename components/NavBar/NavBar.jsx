@@ -22,12 +22,12 @@ const NavBar = () => {
 
   const openMenu = (e) => {
     const btnText = e.target.innerText;
-    if (btnText == "Discover") {
+    if (btnText == "Play") {
       setDiscover(true);
       setHelp(false);
       setNotification(false);
       setProfile(false);
-    } else if (btnText == "Help Center") {
+    } else if (btnText == "Trade") {
       setDiscover(false);
       setHelp(true);
       setNotification(false);
@@ -150,7 +150,7 @@ const NavBar = () => {
       </div>
 
       {/* SIDBAR CPMPONE/NT */}
-      {/* {openSideMenu && (
+      {openSideMenu && (
         <div className={Style.sideBar}>
           <SideBar
             setOpenSideMenu={setOpenSideMenu}
@@ -158,7 +158,7 @@ const NavBar = () => {
             connectWallet={connectWallet}
           />
         </div>
-      )} */}
+      )}
 
       {openError && <Error />}
     </div>

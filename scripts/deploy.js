@@ -21,9 +21,9 @@ async function main() {
   await chatApp.deployed();
 
   // Voting
-  // const TransferFunds = await hre.ethers.getContractFactory("TransferFunds");
-  // const transferFunds = await TransferFunds.deploy();
-  // await transferFunds.deployed();
+  const Voting = await hre.ethers.getContractFactory("Voting");
+  const voting = await Voting.deploy();
+  await voting.deployed();
 
   // Lottery
   const Lottery = await hre.ethers.getContractFactory("LotteryGame");
@@ -33,6 +33,7 @@ async function main() {
   console.log(` Marketplace contract Address ${nftMarketplace.address}`);
   console.log(` Chatapp contract Address: ${chatApp.address}`);
   console.log(` lottery contract Address ${lottery.address}`);
+  console.log(` voting contract Address ${voting.address}`);
   // console.log(` transferfunds contract Address ${transferFunds.address}`);
   // console.log(` bidding contract Address ${bidding.address}`);
   // console.log(` deployed contract Address ${nftMarketplace.address}`);

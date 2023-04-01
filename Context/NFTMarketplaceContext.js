@@ -304,6 +304,34 @@ export const NFTMarketplaceProvider = ({ children }) => {
     }
   };
 
+  // ---- Insure tokens 
+  const insureToken = async (nft) => {
+    try {
+      const contract = await connectingWithSmartContract();
+      const premium = await contract.getPremium();
+      const insure = await contract.insureToken(nft.tokenId, {
+        value : premium,
+      });
+      await insure.wait();
+      router.push("/author");
+    } catch (error) {
+      setError("Error while insuring NFT");
+      setOpenError(true);
+    }
+  }
+
+  const claimInsurance = async (nft) => {
+    try {
+      const contract = await connectingWithSmartContract();
+      const claim = await contract.claimInsurance(nft.tokenId);
+      await claim.wait();
+      router.push("/author");
+    } catch (error) {
+      setError("Error while claiming insurance");
+      setOpenError(true);
+    }
+  }
+
   //------------------------------------------------------------------
 
   //----TRANSFER FUNDS
@@ -402,51 +430,6 @@ export const NFTMarketplaceProvider = ({ children }) => {
   };
 
 
-  
-  const fetchBiddingContract = (signerOrProvider) => 
-      new ethers.Contract(
-        BiddingAddress,
-        BiddingABI,
-        signerOrProvider
-      );
-  
-  const connectToBidding = async() => {
-    try {
-      const web3Modal = new Web3Modal();
-      const connection = await web3Modal.connect();
-      const provider = new ethers.providers.Web3Provider(connection);
-      const signer = provider.getSigner();
-      const contract = fetchBiddingContract(signer);
-      return contract;
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const createBid = async (url, formInputPrice, isReselling, id) => {
-    try {
-      console.log(url, formInputPrice, isReselling, id);
-      const price = ethers.utils.parseUnits(formInputPrice, "ether");
-
-      const contract = await connectToBidding();
-      const listingPrice = await contract.getPrice();
-
-      const transaction = !isReselling
-        ? await contract.createToken(url, price, {
-            value: listingPrice.toString(),
-          })
-        : await contract.resellToken(id, price, {
-            value: listingPrice.toString(),
-          });
-
-      await transaction.wait();
-      console.log(transaction);
-    } catch (error) {
-      setError("error while creating bid");
-      setOpenError(true);
-      console.log(error);
-    }
-  };
 
 
   return (
@@ -471,6 +454,8 @@ export const NFTMarketplaceProvider = ({ children }) => {
         accountBalance,
         transactionCount,
         transactions,
+        insureToken,
+        claimInsurance,
       }}
     >
       {children}

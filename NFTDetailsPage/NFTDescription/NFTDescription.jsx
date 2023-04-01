@@ -104,7 +104,7 @@ const NFTDescription = ({ nft }) => {
   };
 
   //SMART CONTRACT DATA
-  const { buyNFT, currentAccount } = useContext(NFTMarketplaceContext);
+  const { buyNFT, currentAccount, insureToken, claimInsurance } = useContext(NFTMarketplaceContext);
 
   return (
     <div className={Style.NFTDescription}>
@@ -121,7 +121,7 @@ const NFTDescription = ({ nft }) => {
             {social && (
               <div className={Style.NFTDescription_box_share_box_social}>
                 <a href="#">
-                  <TiSocialFacebook /> Facebooke
+                  <TiSocialFacebook /> Facebook
                 </a>
                 <a href="#">
                   <TiSocialInstagram /> Instragram
@@ -179,7 +179,7 @@ const NFTDescription = ({ nft }) => {
                 <small>Creator</small> <br />
                 <Link href={{ pathname: "/author", query: `${nft.seller}` }}>
                   <span>
-                    Karli Costa <MdVerified />
+                    Yang yee <MdVerified />
                   </span>
                 </Link>
               </div>
@@ -197,7 +197,7 @@ const NFTDescription = ({ nft }) => {
               <div className={Style.NFTDescription_box_profile_box_right_info}>
                 <small>Collection</small> <br />
                 <span>
-                  Mokeny app <MdVerified />
+                  Yong Ler <MdVerified />
                 </span>
               </div>
             </div>
@@ -287,6 +287,18 @@ const NFTDescription = ({ nft }) => {
                 handleClick={() => {}}
                 classStyle={Style.button}
               />
+
+              <Button
+                icon=<FaWallet />
+                btnName="Insure NFT"
+                handleClick={() => insureToken(nft)}
+                classStyle={Style.button} />
+
+              <Button
+                icon=<FaWallet />
+                btnName="Claim Insurance"
+                handleClick={() => claimInsurance(nft)}
+                classStyle={Style.button} />
             </div>
 
             <div className={Style.NFTDescription_box_profile_biding_box_tabs}>

@@ -64,7 +64,6 @@ const NFTDetailsImg = ({ nft }) => {
               alt="NFT image"
               width={700}
               height={800}
-              objectFit="cover"
             />
           </div>
         </div>

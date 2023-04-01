@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 //INTERNAL IMPORT
 import {
-    ChechIfWalletConnected,
+    CheckIfWalletConnected,
     connectWallet,
   } from "../Utils/apiFeature";
 
@@ -175,7 +175,7 @@ const connectingWithContract = async () => {
         buyTicket,
         drawWinnerTicket,
         connectWallet,
-        ChechIfWalletConnected,
+        CheckIfWalletConnected,
         account,
         ticketPrice,
         maxTickets,
