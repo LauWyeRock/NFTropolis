@@ -18,13 +18,12 @@ const NFTDetails = () => {
     price: "",
     seller: "",
   });
-
+  
   const router = useRouter();
   useEffect(() => {
     if (!router.isReady) return;
     setNft(router.query);
   }, [router.isReady]);
-
   return (
     <div>
       <NFTDetailsPage nft={nft} />

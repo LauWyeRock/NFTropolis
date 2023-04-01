@@ -25,6 +25,10 @@ const Discover = () => {
       name: "Lottery",
       link: "lottery",
     },
+    {
+      name: "vote",
+      link: "vote"
+    },
     
   ];
   return (

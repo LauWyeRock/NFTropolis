@@ -36,8 +36,7 @@ const transferFunds = () => {
       <div className={Style.transfer_box}>
         <h1>Transfer Ether</h1>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque,
-          aliquam, commodi ullam illum iste{" "}
+          Transfer your ether fast and simple.{" "}
         </p>
         <div className={Style.transfer_box_box}>
           <div className={Style.transfer_box_box_left}>

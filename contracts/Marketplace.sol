@@ -119,6 +119,11 @@ contract Marketplace is ERC721URIStorage, ReentrancyGuard {
         return newTokenId;
     }
 
+    // Get temp highest bid
+    // get temp highest bidder
+    // get initial price of auction
+    // get seller of nft
+
     function createAuctionListing (uint256 price, uint256 tokenId, uint256 durationInSeconds) public returns (uint256) { /////////// AUCTION
         listingCounter++;
         uint256 listingId = listingCounter;
@@ -126,7 +131,7 @@ contract Marketplace is ERC721URIStorage, ReentrancyGuard {
         uint256 startAt = block.timestamp;
         uint256 endAt = startAt + durationInSeconds;
 
-        listings[listingId] = Listing({
+        listings[tokenId] = Listing({
             seller: msg.sender,
             tokenId: tokenId,
             price: price,
@@ -135,9 +140,7 @@ contract Marketplace is ERC721URIStorage, ReentrancyGuard {
             startAt: startAt,
             endAt: endAt
         });
-
-        _transfer(msg.sender, address(this), tokenId);
-
+        // _transfer(msg.sender, address(this), tokenId);
         return listingId;
     }
 
@@ -207,7 +210,7 @@ contract Marketplace is ERC721URIStorage, ReentrancyGuard {
     }
 
     function insureToken(uint256 tokenId) external payable {
-        require(msg.sender == idToMarketItem[tokenId].owner, "Only the owner can insure tokens");
+        require(msg.sender == idToMarketItem[tokenId].seller, "Only the owner can insure tokens");
         require(!insuredTokens[tokenId], "Token is already insured");
         
         uint256 tokenValue = idToMarketItem[tokenId].price;
@@ -219,7 +222,7 @@ contract Marketplace is ERC721URIStorage, ReentrancyGuard {
     
     function claimInsurance(uint256 tokenId) external {
         require(insuredTokens[tokenId], "Token is not insured");
-        require(msg.sender == idToMarketItem[tokenId].owner, "Only owner of token can claim");
+        require(msg.sender == idToMarketItem[tokenId].seller, "Only owner of token can claim");
         
         uint256 tokenValue = idToMarketItem[tokenId].price;
         uint256 payout = tokenValue * (insuredAmounts[tokenId] / totalInsuredAmount);

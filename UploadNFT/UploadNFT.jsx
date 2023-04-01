@@ -75,7 +75,7 @@ const UploadNFT = ({ uploadToIPFS, createNFT }) => {
           <label htmlFor="nft">Item Name</label>
           <input
             type="text"
-            placeholder="shoaib bhai"
+            placeholder="Name"
             className={formStyle.Form_box_input_userName}
             onChange={(e) => setName(e.target.value)}
           />
@@ -95,11 +95,7 @@ const UploadNFT = ({ uploadToIPFS, createNFT }) => {
             />
           </div>
 
-          <p className={Style.upload_box_input_para}>
-            Ciscrypt will include a link to this URL on this item's detail page,
-            so that users can click to learn more about it. You are welcome to
-            link to your own webpage with more details.
-          </p>
+          
         </div>
 
         <div className={formStyle.Form_box_input}>

@@ -104,7 +104,7 @@ const NFTDescription = ({ nft }) => {
   };
 
   //SMART CONTRACT DATA
-  const { buyNFT, currentAccount, insureToken, claimInsurance } = useContext(NFTMarketplaceContext);
+  const { buyNFT, currentAccount, insureToken, claimInsurance, createAuction, bid, endAuction } = useContext(NFTMarketplaceContext);
 
   return (
     <div className={Style.NFTDescription}>
@@ -118,25 +118,6 @@ const NFTDescription = ({ nft }) => {
               onClick={() => openSocial()}
             />
 
-            {social && (
-              <div className={Style.NFTDescription_box_share_box_social}>
-                <a href="#">
-                  <TiSocialFacebook /> Facebook
-                </a>
-                <a href="#">
-                  <TiSocialInstagram /> Instragram
-                </a>
-                <a href="#">
-                  <TiSocialLinkedin /> LinkedIn
-                </a>
-                <a href="#">
-                  <TiSocialTwitter /> Twitter
-                </a>
-                <a href="#">
-                  <TiSocialYoutube /> YouTube
-                </a>
-              </div>
-            )}
 
             <BsThreeDots
               className={Style.NFTDescription_box_share_box_icon}
@@ -163,7 +144,7 @@ const NFTDescription = ({ nft }) => {
         </div>
         {/* //Part TWO */}
         <div className={Style.NFTDescription_box_profile}>
-          <h1>
+          <h1> 
             {nft.name} #{nft.tokenId}
           </h1>
           <div className={Style.NFTDescription_box_profile_box}>
@@ -251,16 +232,17 @@ const NFTDescription = ({ nft }) => {
               >
                 <small>Current Bid</small>
                 <p>
-                  {nft.price} ETH <span>( ≈ $3,221.22)</span>
+                  {nft.price} ETH <span></span>
                 </p>
               </div>
 
-              <span>[96 in stock]</span>
             </div>
 
             <div className={Style.NFTDescription_box_profile_biding_box_button}>
               {currentAccount == nft.seller.toLowerCase() ? (
                 <p>You can't buy your own NFT</p>
+                
+                
               ) : currentAccount == nft.owner.toLowerCase() ? (
                 <Button
                   icon=<FaWallet />
@@ -281,12 +263,12 @@ const NFTDescription = ({ nft }) => {
                 />
               )}
 
-              <Button
+              {/* <Button
                 icon=<FaPercentage />
                 btnName="Make offer"
                 handleClick={() => {}}
                 classStyle={Style.button}
-              />
+              /> */}
 
               <Button
                 icon=<FaWallet />
@@ -299,10 +281,22 @@ const NFTDescription = ({ nft }) => {
                 btnName="Claim Insurance"
                 handleClick={() => claimInsurance(nft)}
                 classStyle={Style.button} />
+
+              <Button
+                icon=<FaWallet />
+                btnName="Create Auction"
+                handleClick={() => createAuction(nft)}
+                classStyle={Style.button} />
+
+              <Button
+                icon=<FaWallet />
+                btnName="Bid for NFT"
+                handleClick={() => bid(nft)}
+                classStyle={Style.button} />
             </div>
 
             <div className={Style.NFTDescription_box_profile_biding_box_tabs}>
-              <button onClick={(e) => openTabs(e)}>Bid History</button>
+              {/* <button onClick={(e) => openTabs(e)}>Bid History</button> */}
               <button onClick={(e) => openTabs(e)}>Provanance</button>
               <button onClick={() => openOwmer()}>Owner</button>
             </div>

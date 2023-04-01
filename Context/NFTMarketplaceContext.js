@@ -304,17 +304,63 @@ export const NFTMarketplaceProvider = ({ children }) => {
     }
   };
 
+  // ---- Create Auction
+  const createAuction = async(nft) => {
+    try {
+      const contract = await connectingWithSmartContract();
+      const transaction = await contract.createAuctionListing(0, nft.tokenId, 600);
+      await transaction.wait();
+      router.push("/author");
+    } catch (error) {
+      console.log(error);
+      setError("Error while making auction");
+      setOpenError(true);
+    }
+  }
+
+  const bid = async(nft) => {
+    try {
+      const contract = await connectingWithSmartContract();
+      const transaction = await contract.bid(nft.tokenId, {
+        value: ethers.utils.parseUnits("0.001", "ether")
+      });
+      await transaction.wait();
+      router.push("/author");
+    } catch (error) {
+      console.log(error);
+      setError("Error while bidding");
+      setOpenError(true);
+    }
+  }
+
+  const endAuction = async(nft) => {
+    try {
+      const contract = await connectingWithSmartContract();
+      const transaction = await contract.completeAuction(nft.tokenId);
+      await transaction.wait();
+      router.push("/author");
+    } catch (error) {
+      console.log(error);
+      setError("Error while ending auction");
+      setOpenError(true);
+    }
+  }
+
   // ---- Insure tokens 
   const insureToken = async (nft) => {
     try {
       const contract = await connectingWithSmartContract();
       const premium = await contract.getPremium();
+      console.log(nft.seller)
+      console.log(nft.owner)
       const insure = await contract.insureToken(nft.tokenId, {
         value : premium,
       });
+      console.log("3")
       await insure.wait();
       router.push("/author");
     } catch (error) {
+      console.log(error)
       setError("Error while insuring NFT");
       setOpenError(true);
     }
@@ -456,6 +502,9 @@ export const NFTMarketplaceProvider = ({ children }) => {
         transactions,
         insureToken,
         claimInsurance,
+        createAuction,
+        bid,
+        endAuction,
       }}
     >
       {children}

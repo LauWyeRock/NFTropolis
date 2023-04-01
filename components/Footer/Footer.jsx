@@ -21,33 +21,6 @@ const Footer = () => {
   return (
     <div className={Style.footer}>
       <div className={Style.footer_box}>
-        <div className={Style.footer_box_social}>
-          {/* <Image src={images.logo} alt="footer logo" height={100} width={100} /> */}
-          <a href="/">
-            <DiJqueryLogo className={Style.footer_box_social_logo} />
-          </a>
-          <p>
-            Our very own NFT marketplace where you can chat and play games as well
-          </p>
-
-          <div className={Style.footer_social}>
-            <a href="#">
-              <TiSocialFacebook />
-            </a>
-            <a href="#">
-              <TiSocialLinkedin />
-            </a>
-            <a href="#">
-              <TiSocialTwitter />
-            </a>
-            <a href="#">
-              <TiSocialYoutube />
-            </a>
-            <a href="#">
-              <TiSocialInstagram />
-            </a>
-          </div>
-        </div>
 
         <div className={Style.footer_box_discover}>
           <h3>Play</h3>
