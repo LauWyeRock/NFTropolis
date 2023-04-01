@@ -2,7 +2,7 @@
 pragma solidity ^0.8.4;
 
 contract TransferFunds {
-    uint256 transactionCount; // a state variable to keep track of the number of transactions
+    uint256 public transactionCount = 0;
 
     // an event to be emitted when a transfer occurs
     event TransferEvent(
@@ -65,4 +65,28 @@ contract TransferFunds {
     function getTransactionCount() public view returns (uint256) {
         return transactionCount;
     }
+
+
+    /*Getter Function For Testing */
+    function getSender(uint index) public view returns (address) {
+        return transactions[index].sender;
+    }
+
+    function getReceiver(uint index) public view returns (address) {
+        return transactions[index].receiver;
+    }
+
+    function getTranscationAmount(uint index) public view returns (uint256) {
+        return transactions[index].amount;
+    }
+
+    function getMessage(uint index) public view returns (string memory) {
+        return transactions[index].message;
+    }
+
+    function getTimeStamp(uint index) public view returns (uint256) {
+        return transactions[index].timestamp;
+    }
+
+
 }

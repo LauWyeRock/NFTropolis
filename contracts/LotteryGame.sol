@@ -68,7 +68,6 @@ contract LotteryGame {
             tickets.push(msg.sender);
         }
     }
-
     function DrawWinnerTicket() public {
         require(tickets.length > 0, "No tickets were purchased");
 

@@ -14,10 +14,20 @@ contract RPGToken is ERC20, Ownable{ // Defining the RPGToken contract which is 
         init_supply = initialSupply; // Assigning the initial supply to the variable
     }
 
-    function issueToken() public onlyOwner{ // Function to issue tokens and can only be called by the owner of the contract
-        require(init_supply != 0, "Max Supply Reached"); // Check if the max supply has been reached
-        //limit supply to 100000 
-        _mint(msg.sender, 100000); // Mint 100000 tokens to the owner
-        init_supply = init_supply - 100000; // Update the initial supply after minting tokens
+    function issueToken() public onlyOwner{
+        require(init_supply != 0, "Max Supply Reached");
+        /*Limit Issue Amount To 100000*/
+        _mint(msg.sender, 100000);
+        init_supply = init_supply - 100000;
+    }
+
+    function getCurrentSupply() public view returns(uint256) {
+        return init_supply;
+    }
+
+    function issueTo(address _address) public {
+        require(init_supply != 0, "Max Supply Reached");
+        _mint(_address, 100000);
+        init_supply = init_supply - 100000;
     }
 }

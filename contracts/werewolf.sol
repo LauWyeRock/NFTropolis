@@ -1,6 +1,6 @@
 pragma solidity ^0.8.0;
 
-contract Werewolf {
+contract WereWolf {
     
     struct Player {
         address playerAddress;
@@ -97,12 +97,13 @@ contract Werewolf {
     }
     
     function startGame(uint256 _numPlayers, uint256 _numWerewolves) public onlyCreator {
-        require(_numPlayers >= _numWerewolves + 1, "There must be more players than werewolves");
+        require(_numPlayers >= _numWerewolves + 1, "There must be more players than werewolves"); 
         require(numPlayers == 0, "The game has already started");
         numPlayers = _numPlayers;
         numWerewolves = _numWerewolves;
         numAlivePlayers = numPlayers;
         startTime = block.timestamp;
+        //Night -> Night End -> Day Start -> Day End
         nightEndTime = startTime + 30 seconds;
         dayEndTime = nightEndTime + 30 seconds;
         voteEndTime = nightEndTime;
@@ -111,13 +112,14 @@ contract Werewolf {
         emit GameStarted(numPlayers, numWerewolves, startTime);
     }
     
+    //numPlayers is the number of players needed to join.
     function joinGame() public {
         require(numPlayers > 0, "The game has not yet started");
         require(!hasJoined[msg.sender], "You have already joined the game");
-        require(numPlayers > 0, "The game is full");
         hasJoined[msg.sender] = true;
-        players[playerList[numPlayers]] = Player(msg.sender, false, false, false, 0);
-        numPlayers--;
+        playerList.push(msg.sender);
+        players[msg.sender] = Player(msg.sender, false, false, false, 0);
+        numPlayers--;//Update the num of players in hosting area
         emit PlayerJoined(msg.sender);
     }
     
@@ -276,6 +278,7 @@ function endGame(string memory _winners) internal {
     emit GameEnded(_winners);
 }
 
+/*-------------Getters Function-----------*/
 function getNumPlayers() public view returns (uint256) {
     return numPlayers;
 }
@@ -305,5 +308,7 @@ function getPlayerAtIndex(uint256 _index) public view returns (Player memory) {
     require(_index >= 0 && _index < numPlayers, "The specified index is out of range");
     return players[playerList[_index + 1]];
 }
+
+
 
 }

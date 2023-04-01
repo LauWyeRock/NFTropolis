@@ -115,6 +115,7 @@ contract Marketplace is ERC721URIStorage, ReentrancyGuard {
         _setTokenURI(newTokenId, tokenURI);
         createMarketItem(newTokenId, price);
         insuredTokens[newTokenId] = false;
+        insuredTokens[newTokenId] = false;
         return newTokenId;
     }
 
@@ -268,6 +269,7 @@ contract Marketplace is ERC721URIStorage, ReentrancyGuard {
         idToMarketItem[tokenId].seller = payable(msg.sender);
         idToMarketItem[tokenId].owner = payable(address(this));
         _itemsSold.decrement();
+
 
         _transfer(msg.sender, address(this), tokenId);
     }
