@@ -7,13 +7,19 @@ contract LotteryGame {
     uint256 public constant ticketPrice = 0.01 ether;
     uint256 public constant maxTickets = 100; // maximum tickets per lottery
     uint256 public constant ticketCommission = 0.001 ether; // commission per ticket
-    uint256 public constant duration = 30 minutes; // The duration set for the lottery
+    uint256 public constant duration =  23 hours; // The duration set for the lottery
+    uint256 constant WAIT_TIME = 1 hours;// Wait time to purchase each ticket Speed Bump
 
     uint256 public expiration; // Timeout in case That the lottery was not carried out.
     address public lotteryOperator; // the creator of the lottery
     uint256 public operatorTotalCommission = 0; // the total commission balance
     address public lastWinner; // the last winner of the lottery
     uint256 public lastWinnerAmount; // the last winner amount of the lottery
+    mapping(address => buyRequest) private buyingRequests; // for Speed Bump
+    struct buyRequest{
+        uint256 numberOfTickets;
+        uint256 requestedAt;
+    }
 
     mapping(address => uint256) public winnings; // maps the winners to there winnings
     address[] public tickets; //array of purchased Tickets
@@ -42,22 +48,31 @@ contract LotteryGame {
     function getTickets() public view returns (address[] memory) {
         return tickets;
     }
-
+    
+    // return winnings for specified address
     function getWinningsForAddress(address addr) public view returns (uint256) {
         return winnings[addr];
     }
 
-    function BuyTickets() public payable {
+    //in the event too many users buy ticket at the same time, we have a speed bump to request to buy first before the actual purchase an hour later
+    //user specifies number of tickets to buy
+    function requestBuyTickets(uint256 numberOfTickets) public  {
+
+        buyingRequests[msg.sender] = buyRequest({
+            numberOfTickets:numberOfTickets,
+            requestedAt: block.timestamp
+        });
+        
+    }
+
+    //actual buying of tickets based on requested number of tickets
+    function BuyTickets() public payable{
+         uint256 numOfTicketsToBuy =  buyingRequests[msg.sender].numberOfTickets;
         require(
-            msg.value % ticketPrice == 0,
-            "the value must be multiple of 0.01 Ether"
-            // string.concat(
-            //     "the value must be multiple of ",
-            //     Strings.toString(ticketPrice),
-            //     " Ether"
-            // )
+            msg.value / ticketPrice == numOfTicketsToBuy,
+            "the value must be multiple of 0.01 Ether"  
         );
-        uint256 numOfTicketsToBuy = msg.value / ticketPrice;
+        require(block.timestamp >  buyingRequests[msg.sender].requestedAt + WAIT_TIME); //Speed Bump 
 
         require(
             numOfTicketsToBuy <= RemainingTickets(),
@@ -68,7 +83,9 @@ contract LotteryGame {
             tickets.push(msg.sender);
         }
     }
-    function DrawWinnerTicket() public {
+
+    //function for operator to draw the winning ticket, calculate his comission, and delete tickets in this draw
+    function DrawWinnerTicket() public isOperator{
         require(tickets.length > 0, "No tickets were purchased");
 
         // generate a random number to select the winner ticket
@@ -88,13 +105,15 @@ contract LotteryGame {
         expiration = block.timestamp + duration; // reset the expiration time for the lottery
     }
 
-    function restartDraw() public {
+    //function for operator to restart a draw after one has been finished already
+    function restartDraw() public isOperator{
         require(tickets.length == 0, "Cannot Restart Draw as Draw is in play");
 
         delete tickets;
         expiration = block.timestamp + duration;
     }
 
+    //return winning amount
     function checkWinningsAmount() public view returns (uint256) {
         address payable winner = payable(msg.sender);
 
@@ -104,6 +123,7 @@ contract LotteryGame {
         return reward2Transfer;
     }
 
+    //function for only the winner to withdraw his winnings
     function WithdrawWinnings() public isWinner {
         address payable winner = payable(msg.sender);
 
@@ -116,6 +136,7 @@ contract LotteryGame {
         // Transfer the winnings amount to the caller's address
         winner.transfer(reward2Transfer);
     }
+
 
     function RefundAll() public {
         require(block.timestamp >= expiration, "the lottery not expired yet");
@@ -132,6 +153,7 @@ contract LotteryGame {
         delete tickets;
     }
 
+    //function for operator to withdraw collected commission 
     function WithdrawCommission() public isOperator {
         address payable operator = payable(msg.sender);
 
