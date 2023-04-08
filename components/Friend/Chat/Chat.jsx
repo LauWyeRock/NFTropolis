@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 //INTERNAL IMPORT
 import Style from "./Chat.module.css";
 import images from "../../../img2";
-import { converTime } from "../../../Utils/apiFeature";
+import { convertTime } from "../../../Utils/apiFeature";
 import { Loader } from "../../componentsindex";
 
 const Chat = ({
@@ -70,7 +70,7 @@ const Chat = ({
                     />
                     <span>
                       {chatData.name} {""}
-                      <small>Time: {converTime(el.timestamp)}</small>
+                      <small>Time: {convertTime(el.timestamp)}</small>
                     </span>
                   </div>
                 ) : (
@@ -83,7 +83,7 @@ const Chat = ({
                     />
                     <span>
                       {userName} {""}
-                      <small>Time: {converTime(el.timestamp)}</small>
+                      <small>Time: {convertTime(el.timestamp)}</small>
                     </span>
                   </div>
                 )}

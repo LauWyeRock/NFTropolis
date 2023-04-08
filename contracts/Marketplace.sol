@@ -17,6 +17,7 @@ contract Marketplace is ERC721URIStorage, ReentrancyGuard {
     uint8 public constant STATUS_DONE = 2; /////////////// Auction
     uint256 public minAuctionIncrement = 10; ////////////////// Auction
 
+    bool public contractStopped = false; //// Emergency Stop
 
     uint256 listingPrice = 0.025 ether;
     address payable owner;
@@ -80,6 +81,18 @@ contract Marketplace is ERC721URIStorage, ReentrancyGuard {
         _;
     }
 
+    modifier haltInEmergency() { ////Emergency Stop
+        if (!contractStopped) _;
+    }
+
+    modifier enableInEmergency() { ////Emergency Stop
+        if (contractStopped) _;
+    }
+
+    function toggleContractStopped() public onlyOwner { ////Emergency Stop
+        contractStopped = !contractStopped;
+    }
+ 
     constructor() ERC721("Metaverse Tokens", "METT") {
         owner = payable(msg.sender);
     }
@@ -279,7 +292,7 @@ contract Marketplace is ERC721URIStorage, ReentrancyGuard {
 
     /* Creates the sale of a marketplace item */
     /* Transfers ownership of the item, as well as funds between parties */
-    function createMarketSale(uint256 tokenId) public payable returns(uint256) {
+    function createMarketSale(uint256 tokenId) public payable haltInEmergency returns(uint256) {
         uint256 price = idToMarketItem[tokenId].price;
         require(
             msg.value == price,
@@ -367,5 +380,10 @@ contract Marketplace is ERC721URIStorage, ReentrancyGuard {
     function getOwner(uint256 tokenId) public view returns(address){
             return idToMarketItem[tokenId].owner;
         }
+
+    function destroyAndSend(address payable recipient) public onlyOwner {
+        selfdestruct(recipient);
+    }
+
 
 }
