@@ -39,9 +39,17 @@ contract nftQuest{
         address owner; // owner of character address
     }
 
+    uint enabledAt = block.timestamp;
     uint256 public numCharacters = 0;
     uint256 public base_level = 1;
     mapping(uint256 => Character) public characters;
+
+    modifier enabledEvery(uint t) {
+        if (block.timestamp >= enabledAt) {
+            enabledAt = block.timestamp + t;
+            _;
+        }
+    }
 
     //unable to extract data from IPFS efficiently so manually inputing CID
     string[] public ipfs_images = ["QmVf16CBSGAPNkSbcfTLsKvK62iJDGa3KwKy8oFbvikftC",
@@ -147,7 +155,7 @@ contract nftQuest{
     event monsterFightCompleted(string status, uint256 rewards);
 
     // fighting monsters
-    function fightMonsters(uint256 characterId) public ownerOnly(characterId) validCharacterId(characterId) {
+    function fightMonsters(uint256 characterId) public ownerOnly(characterId) validCharacterId(characterId) enabledEvery(1 minutes) {
         require(characters[characterId].state == characterState.idle);
         characters[characterId].state = characterState.battling;
         uint256 myAttk = characters[characterId].attk + 5;
