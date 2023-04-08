@@ -8,18 +8,18 @@ import voting from "./Voting.json"
 
 
 //NFT MARKETPLACE
-export const NFTMarketplaceAddress = "0xD7bd0f4d830EeC7A4e8B0B1c658575324C60c00A";
+export const NFTMarketplaceAddress = "0xD6F03D02AA767EAe6752Da3376c744a45c46bC77";
 export const NFTMarketplaceABI = nftMarketplace.abi;
 
 // VOTING
-export const VotingAddress = "0xEBC2EA25B4b5059E9DdBa40b0e65f32c5960f5b3"
+export const VotingAddress = "0x34758f5FeE68cc9a26E5fCDf6EAd99c362cca281"
 export const VotingABI = voting.abi;
 
 //LOTTERYGAME
-export const LotteryAddress = "0xC3d9151Ce438a134A4f7c807AB8FDc0618de0253";
+export const LotteryAddress = "0x92A3b700F66873687843Cd5dc2f9D1614f25C97a";
 export const LotteryABI = lottery.abi;
 
 // CHATAPP
-export const ChatAppAddress = "0x8a04838D430B5B0eA04797607936f35163e7e79A";
+export const ChatAppAddress = "0x00d75Fb7C9CF5A039b4250Ac2f0910fc4b95075D";
 export const ChatAppABI = chatApp.abi;
 

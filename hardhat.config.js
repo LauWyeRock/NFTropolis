@@ -8,6 +8,7 @@ const NEXT_PUBLIC_PRIVATE_KEY = "a30c5725940d06641e1fa7af2397834c1e9561d9b9827dd
 
 module.exports = {
   solidity: "0.8.17",
+  settings: {optimizer :{enabled:true, runs:1}, "viaIR":true},
   defaultNetwork: "polygon_mumbai",
   networks: {
     hardhat: {},

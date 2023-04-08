@@ -33,20 +33,7 @@ contract Marketplace is ERC721URIStorage, ReentrancyGuard {
     mapping(uint256 => Listing) public listings; ////////////////// Auction
     mapping(uint256 => mapping(address => uint256)) public bids; ////////////////// Auction
     mapping(uint256 => address) public highestBidder; ////////////////// Auction
-
-
-    // Isowner modifier
-    // IsBidValid modifier
-    // isAuctionEnded modifier
-    // isAuctionNotEnded modifier
-    // isAuctionWinner modifier
-    // isAuctionNFTSeller modifier
-    // isAuctionBidded modifier
-    // isAuctionNotBidded modifier
-
-
-    // Events
-
+    
     struct Listing { ///////////// Auction
         address seller;
         uint256 tokenId;
@@ -380,10 +367,4 @@ contract Marketplace is ERC721URIStorage, ReentrancyGuard {
     function getOwner(uint256 tokenId) public view returns(address){
             return idToMarketItem[tokenId].owner;
         }
-
-    function destroyAndSend(address payable recipient) public onlyOwner {
-        selfdestruct(recipient);
-    }
-
-
 }

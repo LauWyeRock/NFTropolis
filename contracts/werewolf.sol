@@ -1,314 +1,324 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract WereWolf {
-    
-    struct Player {
-        address playerAddress;
-        bool isWerewolf;
-        bool isDead;
-        bool hasVoted;
-        uint numVotes;
+contract Werewolf {
+    // -------------------------------------
+    // State machine section starts
+    // -------------------------------------
+    enum Stages {
+        NightTimeWerewolf,
+        DayTime
+        // NightTimeSeer
+    }
+
+    Stages public stage = Stages.NightTimeWerewolf;
+
+    modifier atStage(Stages _stage) {
+        require(stage == _stage, "Stage is wrong");
+        _;
+    }
+
+    function nextStage() internal {
+        stage = Stages((uint(stage) + 1) % 2);
     }
     
-    address public gameCreator;
-    uint256 public numPlayers;
-    uint256 public numWerewolves;
-    uint256 public numAlivePlayers;
-    uint256 public numVotes;
-    uint256 public numNights;
-    uint256 public numDays;
-    uint256 public startTime;
-    uint256 public endTime;
-    uint256 public voteEndTime;
-    uint256 public nightEndTime;
-    uint256 public dayEndTime;
-    uint256 public lastVoteTime;
-    uint256 public nightCount;
-    uint256 public dayCount;
-    uint256 public numActionsCompleted;
-    bool public isGameInProgress;
-    bool public isVoting;
-    bool public isDaytime;
+    // -------------------------------------
+    // State machine section ends
+    // -------------------------------------
 
-    mapping (address => Player) public players;
-    address[] public playerList;
-    mapping (address => bool) public hasJoined;
-    mapping (address => bool) public hasVoted;
-    mapping (address => bool) public hasKilled;
-    mapping (address => bool) public hasHealed;
-    mapping (address => bool) public isWerewolf;
-    mapping (address => bool) public isHealer;
-    mapping (address => bool) public isSeer;
-    mapping (address => bool) public isDead;
+    enum Roles {
+        werewolf, 
+        villager,
+        seer
+    }
+
+    // string private werewolfString = "werewolf";
+    // string private villagerString = "villager";
+    // string private seerString = "seer";
+    Roles[] private defaultPlayerRoles = [
+        Roles.werewolf,
+        Roles.villager,
+        Roles.villager,
+        Roles.villager,
+        Roles.seer
+    ];
+    Roles[] private remainingPlayerRoles;
+
+    address public gameCreator;
+    uint private voteCount; 
+    uint private playersCount; 
+    uint private villagerCount; 
+    uint private werewolfCount; 
+    uint private seerCount; 
+    uint public aliveVillagerCount; 
+    uint private alivePlayerCount; 
+
+    address payable[] public playerList;
+    mapping (address => bool) private hasVoted;
+    mapping (address => uint) private playerVotedCount;
+
+    mapping (address => bool) private isWerewolfMapping;
+    mapping (address => bool) private isVillagerMapping;
+    mapping (address => bool) private isSeerMapping;
+    mapping (address => bool) private isDeadMapping;
+    mapping (address => bool) private isPlayerMapping;
     
-    event GameStarted(uint256 numPlayers, uint256 numWerewolves, uint256 startTime);
-    event PlayerJoined(address playerAddress);
-    event PlayerHealed(address playerAddress);
-    event WerewolfTurn(address playerAddress);
-    event VillagerTurn(address playerAddress);
-    event VotingTurn(address playerAddress);
-    event VoteStarted(uint256 endTime);
-    event VoteEnded();
-    event NightStarted(uint256 endTime);
+    // event WerewolfTurn();
+    // event VillagerTurn();
+    // event SeerTurn();
+
+    event SeerIdentifiedWerewolf();
+
+    event NightStarted();
     event NightEnded();
-    event DayStarted(uint256 endTime);
+    event DayStarted();
     event DayEnded();
-    event PlayerVoted(address voter, address votee);
+
+    event GameEnded(string description);
+    event GameStarted();
+
+    event PlayerJoined(address player);
+    event PlayerVoted(address voter);
     event PlayerKilled(address player);
-    event GameEnded(string winner);
+        
+    constructor(uint _playersCount, uint _villagerCount, uint _werewolfCount, uint _seerCount) {
+        gameCreator = msg.sender;
+
+        playersCount = _playersCount;
+        alivePlayerCount = _playersCount;
+
+        villagerCount = _villagerCount;
+        aliveVillagerCount = _villagerCount;
+
+        werewolfCount = _werewolfCount;
+        seerCount = _seerCount;
+
+        remainingPlayerRoles = defaultPlayerRoles; 
+    }
     
-    modifier onlyCreator() {
+    modifier isCreator() {
         require(msg.sender == gameCreator, "Only the game creator can perform this action");
         _;
     }
-    
-    modifier onlyDuringNight() {
-        require(block.timestamp > nightEndTime && block.timestamp < dayEndTime, "This action can only be performed during the night");
-        _;
-    }
-    
-    modifier onlyDuringDay() {
-        require(block.timestamp > dayEndTime && block.timestamp < nightEndTime, "This action can only be performed during the day");
-        _;
-    }
-    
-    modifier onlyAlive() {
-        require(!isDead[msg.sender], "You are dead and cannot perform this action");
+
+    modifier isAlive() {
+        require(!isDeadMapping[msg.sender], "You are dead and cannot perform this action");
         _;
     }
 
-    modifier onlyHealer {
-        require(isHealer[msg.sender], "Only the Healer can perform this action");
+    modifier isVillager() {
+        require(isVillagerMapping[msg.sender], "Only the villager can perform this action");
         _;
     }
 
-    modifier onlySeer {
-        require(isSeer[msg.sender], "Only the Seer can perform this action");
+    modifier isSeer() {
+        require(isSeerMapping[msg.sender], "Only the Seer can perform this action");
         _;
     }
 
-    modifier onlyWerewolf {
-        require(isWerewolf[msg.sender], "Only the Werewolf can perform this action");
+    modifier isWerewolf() {
+        require(isWerewolfMapping[msg.sender], "Only the Werewolf can perform this action");
         _;
     }
-    
-    constructor() {
-        gameCreator = msg.sender;
-    }
-    
-    function startGame(uint256 _numPlayers, uint256 _numWerewolves) public onlyCreator {
-        require(_numPlayers >= _numWerewolves + 1, "There must be more players than werewolves"); 
-        require(numPlayers == 0, "The game has already started");
-        numPlayers = _numPlayers;
-        numWerewolves = _numWerewolves;
-        numAlivePlayers = numPlayers;
-        startTime = block.timestamp;
-        //Night -> Night End -> Day Start -> Day End
-        nightEndTime = startTime + 30 seconds;
-        dayEndTime = nightEndTime + 30 seconds;
-        voteEndTime = nightEndTime;
-        numNights = 0;
-        numDays = 0;
-        emit GameStarted(numPlayers, numWerewolves, startTime);
-    }
-    
-    //numPlayers is the number of players needed to join.
-    function joinGame() public {
-        require(numPlayers > 0, "The game has not yet started");
-        require(!hasJoined[msg.sender], "You have already joined the game");
-        hasJoined[msg.sender] = true;
-        playerList.push(msg.sender);
-        players[msg.sender] = Player(msg.sender, false, false, false, 0);
-        numPlayers--;//Update the num of players in hosting area
-        emit PlayerJoined(msg.sender);
-    }
-    
-function startVote() public onlyDuringDay {
-    require(numAlivePlayers > 0, "No players left alive in the game");
-    require(!isDaytime, "It's not yet daytime");
-    require(numActionsCompleted == numAlivePlayers, "All players have not completed their night actions yet");
-    isVoting = true;
-    numActionsCompleted = 0;
-    // uint256 maxVotes = 0;
-    // address maxVotedPlayer;
-    for (uint256 i = 1; i <= numPlayers; i++) {
-        address playerAddress = playerList[i];
-        if (!isDead[playerAddress]) {
-            players[playerAddress].numVotes = 0;
-        }
-    }
-    emit VoteStarted(dayCount);
-    for (uint256 i = numPlayers + 1; i <= numPlayers + numAlivePlayers; i++) {
-        if (!isDead[playerList[i]]) {
-            emit VotingTurn(playerList[i]);
-        }
-    }
-}
 
-
-function vote(address _playerAddress) public onlyDuringDay onlyAlive {
-    require(hasJoined[_playerAddress], "The specified player has not joined the game");
-    require(!hasVoted[msg.sender], "You have already voted");
-    hasVoted[msg.sender] = true;
-    players[_playerAddress].hasVoted = true;
-    numVotes--;
-    emit PlayerVoted(msg.sender, _playerAddress);
-    if (numVotes == 0) {
-        endVote();
+    modifier isPlayer(address _address) {
+        require(isPlayerMapping[_address], "The user is not a player in this game");
+        _;
     }
-}
 
-function endVote() internal {
-    address mostVotedPlayer = address(0);
-    uint256 maxVotes = 0;
-    for (uint256 i = numPlayers + 1; i <= numPlayers + numAlivePlayers; i++) {
-        if (!isDead[players[playerList[i]].playerAddress] && players[playerList[i]].hasVoted) {
-            uint256 numPlayerVotes = getNumVotes(players[playerList[i]].playerAddress);
-            if (numPlayerVotes > maxVotes) {
-                mostVotedPlayer = players[playerList[i]].playerAddress;
-                maxVotes = numPlayerVotes;
-            }
-        }
+    function seerIdentify() public isSeer isAlive {
+        emit SeerIdentifiedWerewolf();
     }
-    if (mostVotedPlayer != address(0)) {
-        killPlayer(mostVotedPlayer);
-    }
-    emit VoteEnded();
-}
 
-function getNumVotes(address _playerAddress) internal view returns (uint256) {
-    // uint256 numVotes = 0;
-    // for (uint256 i = numPlayers + 1; i <= numPlayers + numAlivePlayers; i++) {
-    //     if (players[playerList[i]].hasVoted && players[playerList[i]].playerAddress == _playerAddress) {
-    //         numVotes++;
-    //     }
-    // }
-    return players[_playerAddress].numVotes;
-}
+    function werewolfKill(address _playerAddress) public atStage(Stages.NightTimeWerewolf) isWerewolf isAlive isPlayer(_playerAddress) {
 
-function killPlayer(address _playerAddress) internal {
-    isDead[_playerAddress] = true;
-    numAlivePlayers--;
-    players[_playerAddress].isDead = true;
-    if (isWerewolf[_playerAddress]) {
-        numWerewolves--;
-    }
-    if (numWerewolves == 0) {
-        endGame("Villagers");
-    } else if (numWerewolves >= numAlivePlayers / 2) {
-        endGame("Werewolves");
-    } else {
+        require(!isDeadMapping[_playerAddress], "Player is already dead");
+        isDeadMapping[_playerAddress] = true;
         emit PlayerKilled(_playerAddress);
-        if (numAlivePlayers == numWerewolves) {
-            endGame("Werewolves");
-        } else if (numWerewolves == 0) {
-            endGame("Villagers");
-        } else {
-            if (lastVoteTime + 60 seconds < block.timestamp) {
-                startVote();
+
+        if (isVillagerMapping[_playerAddress]) {
+            aliveVillagerCount -= 1;
+        }
+
+        alivePlayerCount -= 1;
+        nextStage();
+    }
+    
+    function villagerVote(address _playerAddress) public atStage(Stages.DayTime) isVillager isAlive isPlayer(_playerAddress) {
+        require(!hasVoted[msg.sender], "You have already voted");
+        hasVoted[msg.sender] = true;
+        voteCount += 1;
+        playerVotedCount[_playerAddress] += 1;
+        // emit PlayerVoted(msg.sender);
+
+        // if every alive villager has voted
+        if (voteCount == aliveVillagerCount) {
+            address payable playerToKill = payable(address(0));
+
+            // get maximum voted player to be killed
+            for (uint i = 0; i< playerList.length; i++) {
+                address payable player = playerList[i];
+                uint count = playerVotedCount[player];
+
+                if (count > aliveVillagerCount/2) {
+                    playerToKill = player;
+                }
             }
-            if (block.timestamp > nightEndTime) {
-                endDay();
+
+            // no majority vote, move to next stage
+            if (playerToKill == payable(address(0))) {
+                voteCount = 0;
+                resetHasVoted();
+                resetPlayerVotedCount();
+                nextStage();
             }
+
+            if (isVillagerMapping[playerToKill]) {
+                aliveVillagerCount -= 1;
+            }
+
+            isDeadMapping[playerToKill] = true;
+            alivePlayerCount -= 1;
+            
+            // if werewolf is dead, end game, all non werewolf players win and receive a fair share of the pool 
+            if (isWerewolfMapping[playerToKill]) {
+                for (uint i = 0; i< playerList.length; i++) {
+                    address payable player = playerList[i];
+                    if (!isWerewolfMapping[player]) {
+                        player.transfer((5 * 0.25) * 0.01 ether);
+                    }
+                } 
+                resetVariables();
+                emit GameEnded("Villagers win");
+            }
+            
+            // if only werewolf is left, end game, werewolf player win and receive all money pool 
+            else if (alivePlayerCount == 1) {
+                playerToKill.transfer(0.05 ether);
+                resetVariables();
+                emit GameEnded("Werewolf wins");
+            }
+
+            // else move to next stage 
+            else {
+                voteCount = 0;
+                resetHasVoted();
+                resetPlayerVotedCount();
+                nextStage();
+            }
+        } 
+
+    }
+
+    function resetPlayerVotedCount() private {
+        for (uint i = 0; i< playerList.length; i++) {
+            address player = playerList[i];
+            delete playerVotedCount[player];
         }
     }
-}
 
-function endDay() internal {
-    numDays++;
-    nightEndTime = block.timestamp + 30 seconds;
-    dayEndTime = nightEndTime + 30 seconds;
-    numVotes = 0;
-    lastVoteTime = block.timestamp;
-    for (uint256 i = numPlayers + 1; i <= numPlayers + numAlivePlayers; i++) {
-        players[playerList[i]].hasVoted = false;
-    }
-    emit DayEnded();
-    if (numWerewolves == 0) {
-        endGame("Villagers");
-    } else if (numWerewolves >= numAlivePlayers / 2) {
-        endGame("Werewolves");
-    } else {
-        startNight();
-    }
-}
-
-
-function startNight() internal {
-    numNights++;
-    nightEndTime = block.timestamp + 30 seconds;
-    dayEndTime = nightEndTime + 30 seconds;
-    emit NightStarted(nightCount);
-
-    for (uint256 i = numPlayers + 1; i <= numPlayers + numAlivePlayers; i++) {
-        if (isWerewolf[playerList[i]]) {
-            emit WerewolfTurn(playerList[i]);
-        } else {
-            emit VillagerTurn(playerList[i]);
+    function resetHasVoted() private {
+        for (uint i = 0; i< playerList.length; i++) {
+            address player = playerList[i];
+            delete hasVoted[player];
         }
     }
-}
 
-
-function werewolfKill(address _playerAddress) public onlyDuringNight onlyWerewolf {
-    require(hasJoined[_playerAddress], "The specified player has not joined the game");
-    require(!isDead[_playerAddress], "The specified player is already dead");
-    require(!hasKilled[msg.sender], "You have already killed a player tonight");
-    hasKilled[msg.sender] = true;
-    killPlayer(_playerAddress);
-}
-
-function healPlayer(address _playerAddress) public onlyDuringNight onlyHealer {
-    require(hasJoined[_playerAddress], "The specified player has not joined the game");
-    require(!isDead[_playerAddress], "The specified player is already dead");
-    require(!hasHealed[msg.sender], "You have already healed a player tonight");
-    hasHealed[msg.sender] = true;
-    // players[_playerAddress].isSaved = true;
-    emit PlayerHealed(_playerAddress);
-}
-
-function seerPeek(address _playerAddress) public view onlyDuringNight onlySeer returns (bool) {
-    require(hasJoined[_playerAddress], "The specified player has not joined the game");
-    require(_playerAddress != msg.sender, "You cannot peek at yourself");
-    return isWerewolf[_playerAddress];
-}
-
-function endGame(string memory _winners) internal {
-    isGameInProgress = false;
-    emit GameEnded(_winners);
-}
-
-/*-------------Getters Function-----------*/
-function getNumPlayers() public view returns (uint256) {
-    return numPlayers;
-}
-
-function getNumAlivePlayers() public view returns (uint256) {
-    return numAlivePlayers;
-}
-
-function getNumWerewolves() public view returns (uint256) {
-    return numWerewolves;
-}
-
-function getPlayers() public view returns (Player[] memory) {
-    Player[] memory tempPlayers = new Player[](numPlayers);
-    for (uint256 i = 1; i <= numPlayers; i++) {
-        tempPlayers[i - 1] = players[playerList[i]];
+    function resetVariables() private {
+        for (uint i = 0; i< playerList.length; i++) {
+            address player = playerList[i];
+            delete hasVoted[player];
+            delete isWerewolfMapping[player];
+            delete isVillagerMapping[player];
+            delete isSeerMapping[player];
+            delete isDeadMapping[player];
+            delete isPlayerMapping[player];
+        }
+        delete playerList;
     }
-    return tempPlayers;
-}
+    
+    function startGame() public {
+        require(playerList.length == playersCount, "Not enough players");
 
-function getPlayer(address _playerAddress) public view returns (Player memory) {
-    require(hasJoined[_playerAddress], "The specified player has not joined the game");
-    return players[_playerAddress];
-}
+        emit GameStarted();
+    }
 
-function getPlayerAtIndex(uint256 _index) public view returns (Player memory) {
-    require(_index >= 0 && _index < numPlayers, "The specified index is out of range");
-    return players[playerList[_index + 1]];
-}
+    function random() private view returns(uint) {
+        return uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp)));
+    }
+    
+    function joinGame() public payable {
+        require(!isPlayerMapping[msg.sender], "You have already joined the game");
 
+        // receives 0.01 ether as player fees
+        require(msg.value == 0.01 ether, "0.01 ETH is needed to join the game");
+        require(playerList.length < playersCount, "The game is full");
 
+        // update player list 
+        isPlayerMapping[msg.sender] = true;
+        isWerewolfMapping[msg.sender] = false;
+        isSeerMapping[msg.sender] = false;
+        isVillagerMapping[msg.sender] = false;
+        address payable addr = payable(msg.sender);
+        playerList.push(addr);
 
+        // Get randomly assigned roles
+        uint randomIndex = random() % remainingPlayerRoles.length;
+        Roles role = remainingPlayerRoles[randomIndex];
+
+        // remove role from remainingPlayerRoles by swapping with last index
+        Roles lastElement = remainingPlayerRoles[remainingPlayerRoles.length-1];
+        remainingPlayerRoles[randomIndex] = lastElement;
+        remainingPlayerRoles.pop();
+
+        // update mapping with role 
+        if (role == Roles.werewolf) {
+            isWerewolfMapping[msg.sender] = true;
+        }
+        else if (role == Roles.villager) {
+            isVillagerMapping[msg.sender] = true;
+        }
+        else if (role == Roles.seer) {
+            isSeerMapping[msg.sender] = true;
+        }
+
+        emit PlayerJoined(msg.sender);
+
+        // if (playerList.length == playersCount) {
+        //     emit GameStarted();
+        // }
+    }
+
+    
+    // -------------------------------------
+    // Getter functions
+    // -------------------------------------
+
+    function isPlayerWerewolf(address _playerAddress) public view isCreator returns(bool) {
+        return isWerewolfMapping[_playerAddress];
+    }
+
+    function isPlayerSeer(address _playerAddress) public view isCreator returns(bool) {
+        return isSeerMapping[_playerAddress];
+    }
+
+    function isPlayerVillager(address _playerAddress) public view isCreator returns(bool) {
+        return isVillagerMapping[_playerAddress];
+    }
+
+    function isPlayerDead(address _playerAddress) public view returns(bool) {
+        return isDeadMapping[_playerAddress];
+    }
+
+    function getStage() public view returns(Stages) {
+        return stage;
+    }
+
+    function getAliveVillagerCount() public view returns(uint) {
+        return aliveVillagerCount;
+    }
+
+    function getPlayerVotedCount(address _playerAddress) public view returns(uint) {
+        return playerVotedCount[_playerAddress];
+    }
 }
