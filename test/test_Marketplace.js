@@ -13,6 +13,7 @@ contract('Marketplace', function(accounts) {
         marketInstance= await market.deployed();
     });
 
+
     /*Check that only owner can update listing price*/
     it("Test Update Listing  Price", async() => {
 
@@ -33,6 +34,8 @@ contract('Marketplace', function(accounts) {
             "Price is different from updated price"
         );
     });
+
+
 
     /*Check that minting token functions well*/
     it("Test Minting Token", async() => {
@@ -68,11 +71,155 @@ contract('Marketplace', function(accounts) {
             "Token Id is different from expected."
         );
 
-        //Event is emitted for successful market item creation.
+
+        /*Event is emitted for successful market item creation*/
         truffleAssert.eventEmitted(mint, 'MarketItemCreated');
         
 
     });
+
+    /*Check that an auction listing can be listed*/
+    it("Test Auction ", async() => {
+        
+        const auctionPrice = oneEth;
+        const tokenID = 1;
+        const auctionDuration = 120;
+        const initialBalance = await web3.eth.getBalance(accounts[0]);
+        const initialBalanceBN = web3.utils.toBN(initialBalance);
+
+        truffleAssert.passes(
+            await marketInstance.createAuctionListing(auctionPrice, tokenID, auctionDuration, {
+            from: accounts[0],
+            })
+         );
+        
+
+
+        /*Check that auction is open*/
+        assert.strictEqual(await marketInstance.isAuctionOpen(1), true, "Auction should be open")
+            
+        /*Check that auction is not expired*/
+        assert.strictEqual(await marketInstance.isAuctionExpired(1), false, "Auction should not be expired")
+        
+        /*Check that the owner cannot bid for what he listed*/
+        await truffleAssert.reverts(
+            marketInstance.bid(1,
+            {from:accounts[0],value: oneEth.dividedBy(100)}),
+            "cannot bid on what you own"
+        );
+
+
+        /*Check that the bidder cannot bid for less than below the bidding brice*/
+        await truffleAssert.reverts(
+            marketInstance.bid(1,
+            {from:accounts[1],value: oneEth.dividedBy(100)}),
+            "cannot bid below the latest bidding price"
+        );
+        
+
+        /*Completting the Auction*/
+        let bid = await marketInstance.bid(1, {from:accounts[1],value: oneEth});
+
+        /*Check that auction cannot be completed if it is still open*/
+        await truffleAssert.reverts(
+            marketInstance.completeAuction(1,
+            {from:accounts[1]}),
+            "auction is still open"
+        );
+        
+
+        /*Check that the auction can be completed by delaying the blocktime*/
+        async function increaseBlockTime(timeToAdd) {
+            await web3.currentProvider.send(
+              { jsonrpc: "2.0", method: "evm_increaseTime", params: [timeToAdd], id: new Date().getTime() },
+              () => {}
+            );
+            await web3.currentProvider.send({ jsonrpc: "2.0", method: "evm_mine", id: new Date().getTime() }, () => {});
+        }
+
+        const currentBlock = await web3.eth.getBlock("latest");
+        const desiredTimestamp = 1780802025;
+        const timeToAdd = desiredTimestamp - currentBlock.timestamp;
+
+        if (timeToAdd > 0) {
+        await increaseBlockTime(timeToAdd); /*Increase the block timestamp*/
+        }
+
+
+        truffleAssert.passes(
+            await marketInstance.completeAuction(1, {
+            from: accounts[1],
+            })
+         );
+
+         
+         /*Check that the listing seller funcd increases after the auction is completed*/
+        const afterBalance = await web3.eth.getBalance(accounts[0]);
+        const afterBalanceBN = web3.utils.toBN(afterBalance);
+        assert(afterBalanceBN.gt(initialBalanceBN), "Listing Seller should have received its funds from auction");
+        
+
+         /*Check that the auction is closed*/
+        assert.strictEqual(await marketInstance.isAuctionExpired(1), true, "Auction should have expired");
+
+    });
+
+
+    /*Test Insurance*/
+    it("Test Insurance for Tokens ", async() => {
+
+        /*Check that only the owner can insure the token*/
+        await truffleAssert.reverts(
+            marketInstance.insureToken(1,
+            {from:accounts[1],value: oneEth}),
+            "Only the owner can insure tokens"
+        );
+
+        /*Check that the insure amount must be larger than the premium*/
+        await truffleAssert.reverts(
+            marketInstance.insureToken(1,
+            {from:accounts[0],value: 0}),
+            "Premium not paid"
+        );
+
+        /*Check that you cannot claim a insurance of a token that is not insured*/
+        await truffleAssert.reverts(
+            marketInstance.claimInsurance(1,
+            {from:accounts[0]}),
+            "Token is not insured"
+        );
+
+
+        let insured = await marketInstance.insureToken(1, {from:accounts[0],value: oneEth});
+        
+        /*Check that you cannot insure a token more than once*/
+        await truffleAssert.reverts(
+            marketInstance.insureToken(1,
+            {from:accounts[0],value: oneEth}),
+            "Token is already insured"
+        );
+
+        /*Check that only the owner can claim the insurance*/
+        await truffleAssert.reverts(
+            marketInstance.claimInsurance(1,
+            {from:accounts[1]}),
+            "Only owner of token can claim"
+        );
+
+        /*Check that the account value increases after claiming an insurance*/
+        const initialBalance = await web3.eth.getBalance(accounts[0]);
+        const initialBalanceBN = web3.utils.toBN(initialBalance);
+
+        let claimInsurance = await marketInstance.claimInsurance(1, {from:accounts[0]});
+        
+        const afterBalance = await web3.eth.getBalance(accounts[0]);
+        const afterBalanceBN = web3.utils.toBN(afterBalance);
+
+        assert(afterBalanceBN.gt(initialBalanceBN), "Balance should increase after claiming insurance");
+
+
+    });
+
 
     /*Check that token can Be resell*/
     it("Test Token Resell", async() => {
@@ -81,7 +228,7 @@ contract('Marketplace', function(accounts) {
         await truffleAssert.reverts(
             marketInstance.resellToken(1,
             oneEth.dividedBy(10),
-            {from:accounts[1],value: oneEth.dividedBy(100)}),
+            {from:accounts[0],value: oneEth.dividedBy(100)}),
             "Only item owner can perform this operation"
         );
         
@@ -92,163 +239,24 @@ contract('Marketplace', function(accounts) {
 
     /*Check that token can Be sale of a market item*/
     it("Test Market Sale", async() => {
+
+        let mint2 = await marketInstance.createToken("https://example.com/my-token",oneEth,{from:accounts[2], value: oneEth.dividedBy(10)});
         
         //Check that only asking price equals to msg.value then the transcation goes through
         await truffleAssert.reverts(
-            marketInstance.createMarketSale(1,
-            {from:accounts[1],value: oneEth.dividedBy(1000)}),
+            marketInstance.createMarketSale(2,
+            {from:accounts[2],value: oneEth.dividedBy(1000)}),
             "Please submit the asking price in order to complete the purchase"
         );
 
         //Check that item Sold is correct
-        let sale = await marketInstance.createMarketSale(1,{from:accounts[1],value: oneEth});
+        let sale = await marketInstance.createMarketSale(2,{from:accounts[2],value: oneEth});
         const saleNumber = sale.logs[0].args.tokenId.toNumber();
         
         assert.strictEqual(
-            1,
+            2,
             saleNumber,
             "Item Sold Is Incorrect"
         )
     });
 });
-
-// import { ethers } from "hardhat";
-// import { expect } from "chai";
-// import { NFTAuction } from "../typechain-types/contracts";
-// import nftAuctionDeployer from "./helpers/nft-auction.deployer";
-// import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-// import { ethToWei, increaseTime, toUnits } from "./helpers/test.utils";
-
-// describe.only("NFT Auction Test Cases", () => {
-//   let nftAuctionContract: NFTAuction,
-//     userMinter: SignerWithAddress,
-//     bidder: SignerWithAddress,
-//     bidder2: SignerWithAddress,
-//     tokenId: number,
-//     listingId: number;
-
-//   before(async () => {
-//     [userMinter, bidder, bidder2] = await ethers.getSigners();
-
-//     ({ nftAuctionContract } = await nftAuctionDeployer());
-//   });
-
-//   it("It should mint an NFT", async () => {
-//     // The user mints the NFT
-//     const mintTrx: any = await nftAuctionContract
-//       .connect(userMinter)
-//       .mint("ape-vv-ss", userMinter.address);
-
-//     const trxReceipt = await mintTrx.wait();
-//     tokenId = Number(trxReceipt?.events[0]?.args["tokenId"]);
-
-//     // NFT ID must be 1
-//     expect(tokenId).to.be.equal(1);
-
-//     // User minter must be the owner of NFT 1
-//     expect(userMinter.address).to.be.equal(
-//       await nftAuctionContract.ownerOf(tokenId)
-//     );
-
-//     // User minter must own NFT 1
-//     expect(
-//       Number(await nftAuctionContract.balanceOf(userMinter.address))
-//     ).to.be.equal(1);
-//   });
-
-//   it("It should auction listing", async () => {
-//     // The user create auction listing to run for 2 days
-//     const auctionListingTrx: any = await nftAuctionContract
-//       .connect(userMinter)
-//       .createAuctionListing(ethToWei("0.3"), tokenId, 86400 * 2);
-
-//     const trxReceipt = await auctionListingTrx.wait();
-//     listingId = Number(trxReceipt?.events[2]?.args["listingId"]);
-
-//     // Listing ID must be 1
-//     expect(listingId).to.be.equal(1);
-
-//     // The current contract must become escrow account
-//     expect(nftAuctionContract.address).to.be.equal(
-//       await nftAuctionContract.ownerOf(tokenId)
-//     );
-//   });
-
-//   it("It should place bids, update bid, complete auction & withdraw funds", async () => {
-//     const bidderBalanceBeforeBid = await ethers.provider.getBalance(
-//       bidder.address
-//     );
-//     const bidder2BalanceBeforeBid = await ethers.provider.getBalance(
-//       bidder2.address
-//     );
-
-//     // bidder 1 & 2 place their bids
-//     await nftAuctionContract
-//       .connect(bidder)
-//       .bid(listingId, { value: ethToWei("0.6") });
-
-//     await nftAuctionContract
-//       .connect(bidder2)
-//       .bid(listingId, { value: ethToWei("0.7") });
-
-//     // bidder 1 updates his bid in order to become the highest bidder
-//     await nftAuctionContract
-//       .connect(bidder)
-//       .bid(listingId, { value: ethToWei("0.2") });
-
-//     const bidderBalanceAfterBid = await ethers.provider.getBalance(
-//       bidder.address
-//     );
-//     const bidder2BalanceAfterBid = await ethers.provider.getBalance(
-//       bidder2.address
-//     );
-
-//     expect(toUnits(bidderBalanceBeforeBid)).to.be.greaterThan(
-//       toUnits(bidderBalanceAfterBid)
-//     );
-//     expect(toUnits(bidder2BalanceBeforeBid)).to.be.greaterThan(
-//       toUnits(bidder2BalanceAfterBid)
-//     );
-
-//     // After 3 days the auction has ended
-//     await increaseTime(3 * 86400);
-
-//     const nftOwnerBalanceBeforeAuctionCompletion =
-//       await ethers.provider.getBalance(userMinter.address);
-
-//     // The highest bidder complete the auction
-//     await nftAuctionContract.connect(bidder).completeAuction(listingId);
-
-//     const nftOwnerBalanceAfterAuctionCompletion =
-//       await ethers.provider.getBalance(userMinter.address);
-
-//     // The NFT owner collects funds from the highest bidder
-//     expect(toUnits(nftOwnerBalanceAfterAuctionCompletion)).to.be.greaterThan(
-//       toUnits(nftOwnerBalanceBeforeAuctionCompletion)
-//     );
-
-//     // The Highest bidder becomes the new NFT owner
-//     expect(await nftAuctionContract.ownerOf(tokenId)).to.be.equal(
-//       bidder.address
-//     );
-
-//     expect(
-//       Number(await nftAuctionContract.balanceOf(userMinter.address))
-//     ).to.be.equal(0);
-//     expect(
-//       Number(await nftAuctionContract.balanceOf(bidder.address))
-//     ).to.be.equal(1);
-
-//     // The bidder 2 collects his funds after the auction has ended
-//     const withdrawTrx = await nftAuctionContract
-//       .connect(bidder2)
-//       .withdrawBid(listingId);
-
-//     const withdrawReceipt: any = await withdrawTrx.wait();
-//     const withdrawBidder = withdrawReceipt.events[0]?.args["bidder"];
-//     const withdrawBid = withdrawReceipt.events[0]?.args["bid"];
-
-//     expect(withdrawBidder).to.be.equal(bidder2.address);
-//     expect(toUnits(withdrawBid)).to.be.equal(0.7);
-//   });
-// });

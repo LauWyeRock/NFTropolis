@@ -364,7 +364,9 @@ contract Marketplace is ERC721URIStorage, ReentrancyGuard {
         return items;
     }
 
+
+
     function getOwner(uint256 tokenId) public view returns(address){
             return idToMarketItem[tokenId].owner;
-        }
+    }
 }
