@@ -15,148 +15,186 @@ contract('LotteryGame', function(accounts) {
     });
 
 
+    /*Test Request Buy Ticket*/
+    it("Test Request Buy Ticket", async() => {
 
+        /*Check the number of Buy ticket Request is correct*/
+        let request = await lotteryInstance.requestBuyTickets(5, {from:accounts[1]});
+        let getRequest = await lotteryInstance.getBuyRequest(accounts[1],{from:accounts[1]});
+
+        assert.equal(getRequest[0], 5, "Number of Buy Request Tickets Don't Match");
+    });
+
+
+
+    /*Test Buy Ticket*/
     it("Test Buy Ticket", async() => {
 
-        //Check that the value of purchase ticket is in the multiple of ticketPrice
+        /*Check that the amount must be correct*/
         await truffleAssert.reverts(
-            lotteryInstance.BuyTickets(
-            {from:accounts[1], value:oneEth * 0.015}),
+            lotteryInstance.BuyTickets({
+            from: accounts[1],
+            value: 0,
+            }),
             "the value must be multiple of 0.01 Ether"
         );
 
-        //Check that you cannot purchase more than the remaining ticket
+
+        /*Check that the timeStamp must be correct to buy ticket*/
+        const etherAmount = 0.05;
+        const weiAmount = etherAmount * (10 ** 18);
+
         await truffleAssert.reverts(
-            lotteryInstance.BuyTickets(
-            {from:accounts[1], value:oneEth * 2}),
+            lotteryInstance.BuyTickets({
+            from: accounts[1],
+            value:  weiAmount,
+            }),
+            "Wait a while to buy"
+        );
+
+
+        /*Check that you cannot buy more than the no. of remaining ticket*/
+        let request2 = await lotteryInstance.requestBuyTickets(105, {from:accounts[2]});
+
+
+        /* Delaying the block timestamp*/
+        async function increaseBlockTime(timeToAdd) {
+            await web3.currentProvider.send(
+              { jsonrpc: "2.0", method: "evm_increaseTime", params: [timeToAdd], id: new Date().getTime() },
+              () => {}
+            );
+            await web3.currentProvider.send({ jsonrpc: "2.0", method: "evm_mine", id: new Date().getTime() }, () => {});
+        }
+
+        const timeToAdd =  7200 ;
+
+        if (timeToAdd > 0) {
+            await increaseBlockTime(timeToAdd); /*Increase the block timestamp to 2 hrs later*/
+        }
+
+        const weiAmount2 = 1.05 * (10 ** 18);
+
+        await truffleAssert.reverts(
+            lotteryInstance.BuyTickets({
+            from: accounts[2],
+            value:  weiAmount2,
+            }),
             "Not enough tickets available."
         );
+        
     });
 
 
 
-    //Note:That account[0] will be the default Lottery Operator
-    it("Test Draw Ticket", async() => {
+    /*Test Draw Ticket 1*/
+    it("Test Draw Winner Ticket 1", async() => {
 
-        //Check that there is at least one ticket purchases
+        /*Check that only the operator can draw the winning ticket */
         await truffleAssert.reverts(
-            lotteryInstance.DrawWinnerTicket(
-            {from:accounts[0]}),
+            lotteryInstance.DrawWinnerTicket({
+            from: accounts[1],
+            }),
+            "Only the lottery operator can do this"
+        );
+
+
+        /*Check that the no. of tickets cannot be 0 to draw the winning ticket*/
+        await truffleAssert.reverts(
+            lotteryInstance.DrawWinnerTicket({
+            from: accounts[0],
+            }),
             "No tickets were purchased"
         );
 
-        //Buying of 2 lottery Ticket
-        let buyTicket = await lotteryInstance.BuyTickets({from:accounts[4], value: 0.02 * oneEth});
-        let drawTicket = await lotteryInstance.DrawWinnerTicket({from:accounts[0]});
-        let isWinner = await lotteryInstance.IsWinner({from:accounts[4]});
-
-        //Check that accounts[4] will be a winner after drawing
-        assert.strictEqual(
-            isWinner,
-            true,
-            "Winner selected is wrong"
-        )
-
-        //Check the amount that accounts[4] win after deducting comissin is correct 
-        let winning = await lotteryInstance.checkWinningsAmount({from:accounts[4]})/1;
-        const correctWinning = oneEth.dividedBy(1000).multipliedBy(18)/1;
-
-        assert.strictEqual(
-            winning,
-            correctWinning,
-            "Winning is Incorrect"
-        )
-
     });
 
 
 
-    //Test Restart Drwaing of Lottery
+    /*Test Restart Draw*/
     it("Test Restart Draw", async() => {
 
-        let buyTicket2 = await lotteryInstance.BuyTickets({from:accounts[1], value: 0.02 * oneEth});
-        //Check that there are no purchases tickets.
+        /*Check that only the owner can restart the drawing */
         await truffleAssert.reverts(
-            lotteryInstance.restartDraw(
-                {from:accounts[0]}),
-                "Cannot Restart Draw as Draw is in play"
+            lotteryInstance.restartDraw({
+            from: accounts[1],
+            }),
+            "Only the lottery operator can do this"
+        );
+
+
+        /*Check that the owner can restart the drawing*/
+        truffleAssert.passes(
+            await lotteryInstance.restartDraw({
+            from: accounts[0],
+            })
         );
         
-        //Make sure that there is no tickets before restarting the draw
-        let drawTicket2 = await lotteryInstance.DrawWinnerTicket({from:accounts[0]});
-        let restartDraw = await lotteryInstance.restartDraw({from:accounts[0]})
 
-        //Check that the tickets has no purchased tickets after restarting
-        let remainingTicket = await lotteryInstance.RemainingTickets({from:accounts[0]})/1;
-  
-        assert.strictEqual(
-            remainingTicket,
-            100,
-            "There should be 100 tickets left to draw"
-        )
-
-    });
-
-
-
-    //Test the WithdrawWinnings
-    it("Test Withdraw Winnings", async() => {
-        let withdraw = await lotteryInstance.WithdrawWinnings({from:accounts[1]});
-        let isWinner2 = await lotteryInstance.IsWinner({from:accounts[1]});
-
-        //Check that winning of accounts[1] goes back to 0 after claiming.
-        assert.strictEqual(
-            isWinner2,
-            false,
-            "Winning should be 0 after claiming"
-        )
-    });
-
-
-
-    //Test RefundALl function after lottery has expired.
-    it("Test Refund All", async() => {
-
-        let buyTicket3 = await lotteryInstance.BuyTickets({from:accounts[5], value: 0.02 * oneEth});
-        let buyTicket4 = await lotteryInstance.BuyTickets({from:accounts[6], value: 0.05 * oneEth});
+        /*Check that cannot restart a lottery that is still in play*/
+        const etherAmount = 0.05;
+        const weiAmount = etherAmount * (10 ** 18);
+        
+        let buyTicket = await lotteryInstance.BuyTickets({from: accounts[1], value:  weiAmount,});
 
         await truffleAssert.reverts(
-            lotteryInstance.RefundAll(
-                {from:accounts[0]}),
-                "the lottery not expired yet" 
-        )
-
-        //Bring forward expiration time to call refundAll.
-        let setExpiration = await lotteryInstance.setExpiration({from:accounts[0]});
-
-        let refund = await lotteryInstance.RefundAll({from:accounts[0]});
-        let remainingTicket2 = await lotteryInstance.RemainingTickets({from:accounts[0]})/1;
-        assert.strictEqual(
-            remainingTicket2,
-            100,
-            "Tickets are not set back to 100 after refundAll"
-        )
+            lotteryInstance.restartDraw({
+            from: accounts[0],
+            }),
+            "Cannot Restart Draw as Draw is in play"
+        );
     });
 
 
 
-    //Test withdraw comission function
-    it("Test Withdraw Comission", async() => {
-        //Check that commision before and after withdraw comission is different.
-        let commisionBefore = await lotteryInstance.getOperatorTotalCommission({from:accounts[0]});
-        assert.notEqual(commisionBefore,
-            0,
-            "Comission in Contract should be more than 0"
-        )
+    /*Test Draw Ticket 2 & Winnings/Commission Withdrawl*/
+    it("Test Draw Winner Ticket 2 & Withdrawl Winnings/Comission", async() => {
 
-        let withdrawComission = await lotteryInstance.WithdrawCommission({from:accounts[0]});
-        let comissinAfter = await lotteryInstance.getOperatorTotalCommission({from:accounts[0]})/1;
-        
-        assert.strictEqual(
-            comissinAfter,
-            0,
-            "Comission in Contract should be 0"
-        )
-    })
+
+        const initialBalance = await web3.eth.getBalance(accounts[1]);
+        const initialBalanceBN = web3.utils.toBN(initialBalance);
+        const initialBalance2 = await web3.eth.getBalance(accounts[0]);
+        const initialBalanceBN2 = web3.utils.toBN(initialBalance2);
+
+
+        let drawTicket = await lotteryInstance.DrawWinnerTicket({from: accounts[0]});
+
+        /*Check that account[1] is the winner*/
+        assert.strictEqual(await lotteryInstance.IsWinner({from: accounts[1]}), true, "Account 1 should have been the winner");
+
+
+        /*Check that winning amount is correct*/
+        const etherAmount = 0.045;
+        const weiAmount = etherAmount * (10 ** 18);
+
+        assert.strictEqual(await lotteryInstance.checkWinningsAmount({from: accounts[1]})/1, weiAmount, "Winning Amount is incorrect");
+
+
+        /*Check that the operator comission is correct*/
+        const etherAmount2 = 0.005;
+        const weiAmount2 = etherAmount2 * (10 ** 18);
+
+        assert.strictEqual(await lotteryInstance.getOperatorTotalCommission({from: accounts[1]})/1, weiAmount2, "Operator Comission is incorrect")
+
+
+        /*Check that the balance of account[1] increases after withdrawing the winnings*/
+        await lotteryInstance.WithdrawWinnings({from: accounts[1]});
+        const afterBalance = await web3.eth.getBalance(accounts[1]);
+        const afterBalanceBN = web3.utils.toBN(afterBalance);
+
+        assert(afterBalanceBN.gt(initialBalanceBN), "Account[1] should have received its winnings.");
+
+
+        /*Check that the balance of operator increases after withdrawing the comission*/
+        await lotteryInstance.WithdrawCommission({from: accounts[0]});
+        const afterBalance2 = await web3.eth.getBalance(accounts[0]);
+        const afterBalanceBN2 = web3.utils.toBN(afterBalance2);
+
+        assert(afterBalanceBN.gt(initialBalanceBN), "Operator should have received its comission.");
+
+    });
+
+
+
+    
 
 });

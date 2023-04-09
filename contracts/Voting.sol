@@ -111,6 +111,12 @@ contract Voting {
         emit VoteRevealed(_proposalId, msg.sender, _vote);
     }
 
+    /*function testCommitment(bool _vote, bytes32 _secret) public view returns(bytes32) {
+        bytes32 commitment = keccak256(abi.encodePacked(msg.sender, _vote, _secret));
+        return commitment;
+    }
+    */
+
     function getProposalDetails(uint256 _proposalId) public view returns (string memory question, uint256 yesVotes, uint256 noVotes, uint256 expirationDate) {
         Proposal storage p = proposals[_proposalId];
 

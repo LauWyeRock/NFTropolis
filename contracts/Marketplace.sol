@@ -279,7 +279,7 @@ contract Marketplace is ERC721URIStorage, ReentrancyGuard {
 
     /* Creates the sale of a marketplace item */
     /* Transfers ownership of the item, as well as funds between parties */
-    function createMarketSale(uint256 tokenId) public payable haltInEmergency returns(uint256) {
+    function createMarketSale(uint256 tokenId) public payable haltInEmergency returns(uint256 itemSold) {
         uint256 price = idToMarketItem[tokenId].price;
         require(
             msg.value == price,
@@ -289,7 +289,7 @@ contract Marketplace is ERC721URIStorage, ReentrancyGuard {
         idToMarketItem[tokenId].sold = true;
         idToMarketItem[tokenId].seller = payable(address(0));
         _itemsSold.increment();
-        uint256 itemSold = _itemsSold.current();
+        itemSold = _itemsSold.current();
 
         _transfer(address(this), msg.sender, tokenId);
         payable(owner).transfer(listingPrice);

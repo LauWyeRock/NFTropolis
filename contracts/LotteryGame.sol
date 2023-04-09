@@ -54,6 +54,12 @@ contract LotteryGame {
         return winnings[addr];
     }
 
+    //Get Buy Request
+    function getBuyRequest(address user) public view returns (uint256 numberOfTickets, uint256 requestedAt) {
+        buyRequest memory request = buyingRequests[user];
+    return (request.numberOfTickets, request.requestedAt);
+    }
+
     //in the event too many users buy ticket at the same time, we have a speed bump to request to buy first before the actual purchase an hour later
     //user specifies number of tickets to buy
     function requestBuyTickets(uint256 numberOfTickets) public  {
@@ -72,7 +78,7 @@ contract LotteryGame {
             msg.value / ticketPrice == numOfTicketsToBuy,
             "the value must be multiple of 0.01 Ether"  
         );
-        require(block.timestamp >  buyingRequests[msg.sender].requestedAt + WAIT_TIME); //Speed Bump 
+        require(block.timestamp >  buyingRequests[msg.sender].requestedAt + WAIT_TIME, "Wait a while to buy"); //Speed Bump 
 
         require(
             numOfTicketsToBuy <= RemainingTickets(),
