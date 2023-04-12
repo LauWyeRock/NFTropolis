@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import './ERC20.sol';
+
 contract Werewolf {
     // -------------------------------------
     // State machine section starts
@@ -8,7 +10,6 @@ contract Werewolf {
     enum Stages {
         NightTimeWerewolf,
         DayTime
-        // NightTimeSeer
     }
 
     Stages public stage = Stages.NightTimeWerewolf;
@@ -32,9 +33,6 @@ contract Werewolf {
         seer
     }
 
-    // string private werewolfString = "werewolf";
-    // string private villagerString = "villager";
-    // string private seerString = "seer";
     Roles[] private defaultPlayerRoles = [
         Roles.werewolf,
         Roles.villager,
@@ -62,17 +60,13 @@ contract Werewolf {
     mapping (address => bool) private isSeerMapping;
     mapping (address => bool) private isDeadMapping;
     mapping (address => bool) private isPlayerMapping;
-    
-    // event WerewolfTurn();
-    // event VillagerTurn();
-    // event SeerTurn();
 
+    event giveWinningsToWerewolf();
+    event giveWinningsToNonWerewolf();
     event SeerIdentifiedWerewolf();
 
     event NightStarted();
-    event NightEnded();
     event DayStarted();
-    event DayEnded();
 
     event GameEnded(string description);
     event GameStarted();
@@ -126,8 +120,18 @@ contract Werewolf {
         _;
     }
 
-    function seerIdentify() public isSeer isAlive {
+    function seerIdentify() public isSeer isAlive returns(address) {
         emit SeerIdentifiedWerewolf();
+
+        for (uint i = 0; i< playerList.length; i++) {
+            address player = playerList[i];
+            if (isWerewolfMapping[player]) {
+                return player;  
+            }
+        } 
+
+        // this should not occur
+        return address(0);
     }
 
     function werewolfKill(address _playerAddress) public atStage(Stages.NightTimeWerewolf) isWerewolf isAlive isPlayer(_playerAddress) {
@@ -142,6 +146,7 @@ contract Werewolf {
 
         alivePlayerCount -= 1;
         nextStage();
+        emit DayStarted();
     }
     
     function villagerVote(address _playerAddress) public atStage(Stages.DayTime) isVillager isAlive isPlayer(_playerAddress) {
@@ -149,7 +154,6 @@ contract Werewolf {
         hasVoted[msg.sender] = true;
         voteCount += 1;
         playerVotedCount[_playerAddress] += 1;
-        // emit PlayerVoted(msg.sender);
 
         // if every alive villager has voted
         if (voteCount == aliveVillagerCount) {
@@ -171,6 +175,7 @@ contract Werewolf {
                 resetHasVoted();
                 resetPlayerVotedCount();
                 nextStage();
+                emit NightStarted();
             }
 
             if (isVillagerMapping[playerToKill]) {
@@ -182,17 +187,10 @@ contract Werewolf {
             
             // if werewolf is dead, end game, all non werewolf players win and receive a fair share of the pool 
             if (isWerewolfMapping[playerToKill]) {
-                for (uint i = 0; i< playerList.length; i++) {
-                    address payable player = playerList[i];
-                    if (!isWerewolfMapping[player]) {
-                        player.transfer((5 * 0.25) * 0.01 ether);
-                    }
-                } 
-                resetVariables();
                 emit GameEnded("Villagers win");
             }
             
-            // if only werewolf is left, end game, werewolf player win and receive all money pool 
+            // if only werewolf is left, end game, werewolf win and receive all money pool 
             else if (alivePlayerCount == 1) {
                 playerToKill.transfer(0.05 ether);
                 resetVariables();
@@ -205,9 +203,32 @@ contract Werewolf {
                 resetHasVoted();
                 resetPlayerVotedCount();
                 nextStage();
+                emit NightStarted();
             }
         } 
 
+    }
+
+    function giveWinningsToNonWerewolfAndResetGame() public isCreator {
+        for (uint i = 0; i<5; i++) {
+            address payable player = playerList[i];
+            if (!isWerewolfMapping[player]) {
+                player.transfer((5 * 0.25) * 0.01 ether);
+            }
+        } 
+        resetVariables();
+        emit giveWinningsToNonWerewolf();
+    }
+
+    function giveWinningsToWerewolfAndResetGame() public isCreator {
+        for (uint i = 0; i<5; i++) {
+            address payable player = playerList[i];
+            if (isWerewolfMapping[player]) {
+                player.transfer(0.05 ether);
+            }
+        } 
+        resetVariables();
+        emit giveWinningsToWerewolf();
     }
 
     function resetPlayerVotedCount() private {
@@ -284,9 +305,6 @@ contract Werewolf {
 
         emit PlayerJoined(msg.sender);
 
-        // if (playerList.length == playersCount) {
-        //     emit GameStarted();
-        // }
     }
 
     
