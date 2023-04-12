@@ -211,7 +211,7 @@ contract("Werewolf", function (accounts) {
     // left 1 werewolf, 1 villager
   });
 
-  it("Game where villagers win", async () => {
+  it("Game end", async () => {
     // last villager votes werewolf
     let temp = await werewolfInstance.villagerVote(werewolfAddress, {
       from: villagerAddress3,
