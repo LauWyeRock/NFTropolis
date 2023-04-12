@@ -32,9 +32,6 @@ contract("Werewolf", function (accounts) {
         value: oneHundredthEth,
       })
     );
-
-    // truffleAssert.eventEmitted(temp, "PlayerJoined");
-    // assert.equal(werewolfInstance.playerList.length, 1, "player not added");
   });
 
   it("4 players join the game, fail to start game", async () => {
@@ -215,27 +212,6 @@ contract("Werewolf", function (accounts) {
   });
 
   it("Game where villagers win", async () => {
-    // get account balance before Winning
-    let villager1BalanceBeforeWinning = await web3.eth.getBalance(
-      villagerAddress1
-    );
-
-    let villager2BalanceBeforeWinning = await web3.eth.getBalance(
-      villagerAddress2
-    );
-
-    let villager3BalanceBeforeWinning = await web3.eth.getBalance(
-      villagerAddress3
-    );
-
-    let seerBalanceBeforeWinning = await web3.eth.getBalance(seerAddress);
-
-    let werewolfBalanceBeforeWinning = await web3.eth.getBalance(
-      werewolfAddress
-    );
-
-    // check roles
-   
     // last villager votes werewolf
     let temp = await werewolfInstance.villagerVote(werewolfAddress, {
       from: villagerAddress3,
