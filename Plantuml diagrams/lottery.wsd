@@ -1,0 +1,25 @@
+@startuml
+
+actor Operator 
+actor Player1
+actor Player2
+entity LotteryGame 
+
+== Create phase ==
+Operator -> LotteryGame: create lottery 
+
+== Buying phase ==
+
+Player1 -> LotteryGame: buyTicket (speed bump)
+Player2 -> LotteryGame: buyTicket (speed bump)
+
+== Results phase ==
+
+Operator -> LotteryGame: drawTicket
+Operator -> LotteryGame: draw reset 
+
+Player1 -> LotteryGame: retrieve winnings
+Operator -> LotteryGame: retrieve commission
+
+
+@enduml 

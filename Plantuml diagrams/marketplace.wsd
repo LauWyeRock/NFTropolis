@@ -1,0 +1,16 @@
+@startuml
+
+actor Actor 
+entity Marketplace 
+
+Actor -> Marketplace: createToken
+Actor -> Marketplace: createMarketItem
+Actor -> Marketplace: createMarketSale
+
+Marketplace -> Marketplace: createAuctionListing
+Marketplace -> Marketplace: completeAuction
+
+Marketplace -> Marketplace: insureToken
+Marketplace -> Marketplace: claimInsurance
+
+@enduml 

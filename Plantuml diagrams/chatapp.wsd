@@ -1,0 +1,14 @@
+@startuml
+
+actor Actor 
+actor Actor2 
+entity ChatApp 
+
+Actor -> ChatApp: createAccount
+Actor -> ChatApp: addfriend
+Actor -> ChatApp: sendMessage
+
+Actor2 -> ChatApp: createAccount
+Actor2 -> ChatApp: readMessage
+
+@enduml 

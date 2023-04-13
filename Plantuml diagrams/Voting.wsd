@@ -1,0 +1,11 @@
+@startuml
+
+actor Actor 
+entity Voting 
+
+Actor -> Voting: createProposal
+Actor -> Voting: commitVote
+Actor -> Voting: revealVote
+Actor -> Voting: isProposalPassed
+
+@enduml 

@@ -1,0 +1,23 @@
+@startuml
+
+actor Actor 
+entity RPGToken
+
+entity NFTQuest 
+
+== RPGToken ==
+
+Actor -> RPGToken: issue max supply 
+note over Actor : transfer token to NFTQuest
+
+== NFTQuest ==
+
+Actor -> NFTQuest: mint
+
+== ChainLink integration (VRF2Consumer) ==
+
+Actor -> NFTQuest: start fight
+NFTQuest -> NFTQuest: generateRandomNumber()
+note over NFTQuest: character level increases
+
+@enduml 

@@ -1,0 +1,56 @@
+@startuml
+
+actor "Player1(werwolf)" as w
+actor "Player2(seer)" as s
+actor "Player3(villager1)" as v1
+actor "Player4(villager2)" as v2
+actor "Player5(villager3)" as v3
+entity Werewolf 
+
+== Setup ==
+
+w -> Werewolf: joinGame()
+s -> Werewolf: joinGame()
+v1 -> Werewolf: joinGame()
+v2 -> Werewolf: joinGame()
+v3 -> Werewolf: joinGame() 
+
+note over Werewolf: Players automatically get assigned roles when they join game with 0.01 ether 
+
+== Gameplay (Starts with night time) ==
+
+w -> Werewolf: werewolfKill(Player3(villager1))
+note over Werewolf: Player3(villager1) dies
+
+Werewolf -> Werewolf: nextStage() 
+note over Werewolf: switches to day time
+
+
+
+
+s -> Werewolf: seerIdentify()
+Werewolf --> s: address of Player1(werwolf)
+
+v2 -> Werewolf: villagerVote(Player2(seer))
+v3 -> Werewolf: villagerVote(Player2(seer))
+note over Werewolf: Player2(seer) dies
+
+Werewolf -> Werewolf: nextStage() 
+note over Werewolf: switches to night time
+
+
+
+
+
+w -> Werewolf: werewolfKill(Player4(villager2))
+note over Werewolf: Player4(villager2) dies
+
+Werewolf -> Werewolf: nextStage() 
+note over Werewolf: switches to day time
+
+== Game ends == 
+
+v3 -> Werewolf: villagerVote(Player1(werwolf))
+note over Werewolf: Player1(werwolf) dies
+
+@enduml 
