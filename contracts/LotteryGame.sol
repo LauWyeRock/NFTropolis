@@ -8,7 +8,7 @@ contract LotteryGame {
     uint256 public constant maxTickets = 100; // maximum tickets per lottery
     uint256 public constant ticketCommission = 0.001 ether; // commission per ticket
     uint256 public constant duration =  23 hours; // The duration set for the lottery
-    uint256 constant WAIT_TIME = 1 hours;// Wait time to purchase each ticket Speed Bump
+    uint256 constant WAIT_TIME =  5 minutes;// Wait time to purchase each ticket Speed Bump
 
     uint256 public expiration; // Timeout in case That the lottery was not carried out.
     address public lotteryOperator; // the creator of the lottery
@@ -74,11 +74,16 @@ contract LotteryGame {
     //actual buying of tickets based on requested number of tickets
     function BuyTickets() public payable{
          uint256 numOfTicketsToBuy =  buyingRequests[msg.sender].numberOfTickets;
+         uint256 cost = numOfTicketsToBuy * ticketPrice;
         require(
-            msg.value / ticketPrice == numOfTicketsToBuy,
+            msg.value % (cost) == 0,
             "the value must be multiple of 0.01 Ether"  
         );
+<<<<<<< Updated upstream
         require(block.timestamp >  buyingRequests[msg.sender].requestedAt + WAIT_TIME, "Wait a while to buy"); //Speed Bump 
+=======
+        require(block.timestamp >  buyingRequests[msg.sender].requestedAt + WAIT_TIME, "You need to wait while we process"); //Speed Bump 
+>>>>>>> Stashed changes
 
         require(
             numOfTicketsToBuy <= RemainingTickets(),
